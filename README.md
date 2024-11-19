@@ -5,6 +5,8 @@ Our web-based application is an event management and ticketing platform that all
 
 ## Requirements
 Install NPM and Node.js (Installation: [Link](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm))
+Node.js v20.18.0
+NPM 10.8.2
 
 ## Installation
 
