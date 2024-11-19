@@ -1,3 +1,4 @@
+"use client"
 import { lusitana } from '../ui/fonts';
 import {
   AtSymbolIcon,
@@ -9,10 +10,35 @@ import {
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function SignUpForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [first, setFirst] = useState('');
+  const [last, setLast] = useState('');
+  const [phone, setPhone] = useState('');
+  const [formError, setFormError] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Simple validation
+    if (!email || !password || !first || !last || !phone) {
+      setFormError('Please fill in all fields.');
+      return;
+    }
+
+    // Additional validation logic can go here (e.g., email format, password length)
+
+    // If validation passes, redirect to the dashboard
+    setFormError(''); // Clear any previous errors
+    router.push('/dashboard');
+  };
   return (
-    <form className="space-y-3">
+    <form className="space-y-3" onSubmit={handleSubmit}>
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Please fill in the following fields to sign up.
@@ -33,6 +59,8 @@ export default function SignUpForm() {
                 name="first_name"
                 placeholder="Enter your First Name"
                 required
+                value={first}
+                onChange={(e) => setFirst(e.target.value)}
               />
               <PencilSquareIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -52,6 +80,8 @@ export default function SignUpForm() {
                 name="last_name"
                 placeholder="Enter your Last Name"
                 required
+                value={last}
+                onChange={(e) => setLast(e.target.value)}
               />
               <PencilSquareIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -71,6 +101,8 @@ export default function SignUpForm() {
                 name="email"
                 placeholder="Enter your email address"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -91,6 +123,8 @@ export default function SignUpForm() {
                 placeholder="Enter password"
                 required
                 minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -111,16 +145,25 @@ export default function SignUpForm() {
                 placeholder="Enter your phone number"
                 required
                 minLength={6}
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
               />
               <PhoneIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
-        <Button className="mt-4 w-full">
-          Sign Up <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
-        <div className="flex h-8 items-end space-x-1">
-          {/* Add form errors here */}
+
+        {formError && (
+          <div className="mt-2 text-sm text-red-600">
+            <ExclamationCircleIcon className="inline h-5 w-5 mr-1" />
+            {formError}
+          </div>
+        )}
+
+        <div>
+          <Button type="submit" className="mt-4 w-full">
+            Sign Up <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
         </div>
       </div>
     </form>

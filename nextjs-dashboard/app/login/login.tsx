@@ -1,3 +1,5 @@
+"use client";
+
 import { lusitana } from '../ui/fonts';
 import {
   AtSymbolIcon,
@@ -7,10 +9,33 @@ import {
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '../ui/button';
 import Link from 'next/link';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [formError, setFormError] = useState('');
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Simple validation
+    if (!email || !password) {
+      setFormError('Please fill in all fields.');
+      return;
+    }
+
+    // Additional validation logic can go here (e.g., email format, password length)
+
+    // If validation passes, redirect to the dashboard
+    setFormError(''); // Clear any previous errors
+    router.push('/dashboard');
+  };
+
   return (
-    <form className="space-y-3">
+    <form className="space-y-3" onSubmit={handleSubmit}>
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`${lusitana.className} mb-3 text-2xl`}>
           Please log in to continue.
@@ -31,6 +56,8 @@ export default function LoginForm() {
                 name="email"
                 placeholder="Enter your email address"
                 required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <AtSymbolIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
@@ -50,22 +77,33 @@ export default function LoginForm() {
                 name="password"
                 placeholder="Enter password"
                 required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 minLength={6}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
         </div>
-        <Button className="mt-4 w-full">
-          Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
+
+        {formError && (
+          <div className="mt-2 text-sm text-red-600">
+            <ExclamationCircleIcon className="inline h-5 w-5 mr-1" />
+            {formError}
+          </div>
+        )}
+
         <div>
-          <Link href="../signup">
-            <span>Don't have an account? Sign up here</span> <ArrowRightIcon className="w-5 md:w-6" />
-          </Link>
+          <Button type="submit" className="mt-4 w-full">
+            Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
         </div>
-        <div className="flex h-8 items-end space-x-1">
-          {/* Add form errors here */}
+
+        <div className="mt-4">
+          <Link href="/signup">
+            <span className="text-blue-600">Don't have an account? Sign up here</span>{' '}
+            <ArrowRightIcon className="w-5 md:w-6 inline" />
+          </Link>
         </div>
       </div>
     </form>
