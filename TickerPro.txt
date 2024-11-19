@@ -1,0 +1,62 @@
+app
+  page.tsx		#initial page of TicketPro with login/signup button
+			#if the user is signed in go to home 
+			#Ask if the user is a regular user or an organization
+  layout.tsx
+
+  login
+    login.tsx		#house the components for the login page of a normal user
+    page.tsx		#login page that should provide login fields such as username and password (look at schema
+			#include option to sign up if they don't have an account 
+    layout.tsx
+
+  signup
+    signup.tsx		#house the components for the signup screen for a normal user
+    page.tsx		#signup page that should provide fields for the user that we collect and store
+			#look at schema for fields
+    layout.tsx
+
+  orgLogin
+    orgnLogin.tsx	#house the components for the login page for an organization
+    page.tsx		#login page that should provide login fields such as username and password (look at schema
+			#include option to sign up if they don't have an account 
+    layout.tsx
+
+  orgSignup
+    orgSignup.tsx	#house the components for the signup screen for an organization
+    page.tsx		#signup page that should provide fields for the organization that we collect and store
+			#look at schema for fields
+    layout.tsx
+
+  home
+    search.tsx		#house the components for the search component of the home page
+    
+    page.tsx		#home page of TicketPro that shows events, etc
+    layout.tsx
+
+  event
+    event.tsx		#house components to display the event a user selected
+    page.tsx		#event page that will display information about the event
+    layout.tsx
+
+    register
+      register.tsx	#house components to for registering for an event, eg. payment, waitlist
+      page.tsx		#page for registering for an event
+      layout.tsx 
+
+    create
+      create.tsx	#house components for creating an event (only for organization type users)#cr
+      page.tsx		#creation page that should provide fields for the user about the event they are creating (refer to schema)
+      layout.tsx  
+	
+  profile
+    profile.tsx		#house components to display the profile
+    page.tsx		#profile page that will display information about the user that they can edit (will display additional information
+			#for users that are organization)
+    layout.tsx
+
+  organization
+    organization.tsx	#house components to display the details about an organization holding an event
+    page.tsx		#essentially an additional profile page for an organization for users to view
+    layout.tsx    
+
