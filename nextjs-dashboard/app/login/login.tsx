@@ -1,21 +1,21 @@
 "use client";
 
-import { lusitana } from '../ui/fonts';
+import { lusitana } from "../ui/fonts";
 import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
-} from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from '../ui/button';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+} from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [formError, setFormError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState("");
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -23,15 +23,15 @@ export default function LoginForm() {
 
     // Simple validation
     if (!email || !password) {
-      setFormError('Please fill in all fields.');
+      setFormError("Please fill in all fields.");
       return;
     }
 
     // Additional validation logic can go here (e.g., email format, password length)
 
     // If validation passes, redirect to the dashboard
-    setFormError(''); // Clear any previous errors
-    router.push('/dashboard');
+    setFormError(""); // Clear any previous errors
+    router.push("/dashboard");
   };
 
   return (
@@ -84,6 +84,7 @@ export default function LoginForm() {
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
             </div>
           </div>
+          <div>{formError}</div>
         </div>
 
         {formError && (
@@ -101,7 +102,9 @@ export default function LoginForm() {
 
         <div className="mt-4">
           <Link href="/signup">
-            <span className="text-blue-600">Don't have an account? Sign up here</span>{' '}
+            <span className="text-blue-600">
+              Don't have an account? Sign up here
+            </span>{" "}
             <ArrowRightIcon className="w-5 md:w-6 inline" />
           </Link>
         </div>
