@@ -4,13 +4,27 @@ Our web-based application is an event management and ticketing platform that all
 
 
 ## Requirements
-Install NPM and Node.js (Installation: [Link](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm))
-Node.js v20.18.0
-NPM 10.8.2
+Install NPM and Node.js (Installation: [Link](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm))<br />
+Node.js v20.18.0<br />
+NPM 10.8.2<br />
+### MySQl
+Install MySQL Workbench (Installation [Link](https://dev.mysql.com/downloads/workbench/))<br />
+1. Create an account for the root user
+2. Create and Use a database called ticket_pro
+3. Execute the tm_createdb.sql file
+
+### .env File
+1. Create an .env file and include the following environmental variables (Replace password with the password used for the root user in the previous steps)
+DB_HOST=localhost<br />
+DB_USER=root<br />
+DB_PASSWORD=password<br />
+DB_NAME=ticket_pro<br />
+
+###
 
 ## Installation
 
-1. Switch to ../nextjs-dashboard folder (Using cd command) after cloning Repository
+1. Switch to ./nextjs-dashboard folder (Using cd command) after cloning Repository
 
 2. Install pnpm
 ```bash

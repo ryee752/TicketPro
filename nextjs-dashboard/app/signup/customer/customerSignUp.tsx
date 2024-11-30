@@ -6,14 +6,13 @@ import {
   ExclamationCircleIcon,
   PencilSquareIcon,
   PhoneIcon,
-  HomeIcon,
-  GlobeAltIcon,
 } from '@heroicons/react/24/outline';
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '../../ui/button';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('');
@@ -24,7 +23,7 @@ export default function SignUpForm() {
   const [formError, setFormError] = useState('');
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Simple validation
@@ -33,12 +32,26 @@ export default function SignUpForm() {
       return;
     }
 
-    // Additional validation logic can go here (e.g., email format, password length)
-
-    // If validation passes, redirect to the dashboard
     setFormError(''); // Clear any previous errors
-    router.push('/dashboard');
+    
+    //Inserting data 
+    const response = await fetch('../../api/signup/customer', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ first, last, phone, email, password }),
+    });
+
+    if (response.ok) {
+      // The request was successful
+      const result = await response.json(); // If the server returns JSON data
+      console.log(result); // Process the result
+      router.push('../../dashboard');
+    } else {
+      // The request failed
+      console.error('Registration failed');
+    }
   };
+
   return (
     <form className="space-y-3" onSubmit={handleSubmit}>
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">

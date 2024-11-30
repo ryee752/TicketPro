@@ -14,31 +14,45 @@ import { Button } from '../../ui/button';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { stat } from 'fs';
 
 export default function OrganizationSignUpForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
-    const [address, setAddress] = useState('');
+    const [street, setStreet] = useState('');
+    const [city, setCity] = useState('');
+    const [state, setState] = useState('');
+    const [zipCode, setZipCode] = useState('');
     const [phone, setPhone] = useState('');
     const [website, setWebsite] = useState('');
     const [formError, setFormError] = useState('');
     const router = useRouter();
   
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
   
       // Simple validation
-      if (!email || !password || !name || !website || !phone || !address) {
+      if (!email || !password || !name || !website || !phone || !street || !city || !state || !zipCode) {
         setFormError('Please fill in all fields.');
         return;
       }
   
-      // Additional validation logic can go here (e.g., email format, password length)
+      const response = await fetch('../../api/signup/organization', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, website, phone, email, street, city, state, zipCode, password }),
+      });
   
-      // If validation passes, redirect to the dashboard
-      setFormError(''); // Clear any previous errors
-      router.push('/dashboard');
+      if (response.ok) {
+        // The request was successful
+        const result = await response.json(); // If the server returns JSON data
+        console.log(result); // Process the result
+        router.push('../../dashboard');
+      } else {
+        // The request failed
+        console.error('Registration failed');
+      }
     };
     return (
       <form className="space-y-3" onSubmit={handleSubmit}>
@@ -71,20 +85,83 @@ export default function OrganizationSignUpForm() {
             <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
-                htmlFor="last_name"
+                htmlFor="street"
               >
-                Address
+                Street
               </label>
               <div className="relative">
                 <input
                   className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
-                  id="address"
-                  type="address"
-                  name="address"
-                  placeholder="Enter your Address"
+                  id="street"
+                  type="street"
+                  name="street"
+                  placeholder="Enter your Street"
                   required
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  value={street}
+                  onChange={(e) => setStreet(e.target.value)}
+                />
+                <HomeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+            <div>
+              <label
+                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="city"
+              >
+                City
+              </label>
+              <div className="relative">
+                <input
+                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  id="city"
+                  type="city"
+                  name="city"
+                  placeholder="Enter your City"
+                  required
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                />
+                <HomeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+            <div>
+              <label
+                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="state"
+              >
+                State
+              </label>
+              <div className="relative">
+                <input
+                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  id="state"
+                  type="state"
+                  name="state"
+                  placeholder="Enter your State"
+                  required
+                  value={state}
+                  onChange={(e) => setState(e.target.value)}
+                />
+                <HomeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+              </div>
+            </div>
+            <div>
+              <label
+                className="mb-3 mt-5 block text-xs font-medium text-gray-900"
+                htmlFor="zipcode"
+              >
+                ZIP Code
+              </label>
+              <div className="relative">
+                <input
+                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm outline-2 placeholder:text-gray-500"
+                  id="zipcode"
+                  type="zipcode"
+                  name="zipcode"
+                  placeholder="Enter your ZIP Code"
+                  required
+                  value={zipCode}
+                  onChange={(e) => setZipCode(e.target.value)}
                 />
                 <HomeIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
