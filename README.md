@@ -14,11 +14,12 @@ Install MySQL Workbench (Installation [Link](https://dev.mysql.com/downloads/wor
 3. Execute the tm_createdb.sql file
 
 ### .env File
-1. Create an .env file and include the following environmental variables (Replace password with the password used for the root user in the previous steps)
+1. Create an .env file and include the following environmental variables (Replace password with the password used for the root user in the previous steps)<br />
 DB_HOST=localhost<br />
 DB_USER=root<br />
 DB_PASSWORD=password<br />
 DB_NAME=ticket_pro<br />
+2. Add the .env file to the nextjs-dashboard directory
 
 ###
 
