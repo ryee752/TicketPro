@@ -1,6 +1,8 @@
+USE ticket_pro;
+
 CREATE TABLE Passwords (
-	password_ID VARCHAR(20),
-    hashed_password VARCHAR(50) NOT NULL,
+	password_ID VARCHAR(50),
+    hashed_password VARCHAR(60) NOT NULL,
     password_salt VARCHAR(50),
     creation_date DATETIME,
     last_update_date DATETIME,
@@ -8,20 +10,19 @@ CREATE TABLE Passwords (
 );
 
 CREATE TABLE User (
-    user_ID VARCHAR(20),
-    password_ID VARCHAR(20),
+    user_ID VARCHAR(50),
+    password_ID VARCHAR(50),
     first_name VARCHAR(50),
     last_name VARCHAR(50),
     phone VARCHAR(50),
     email VARCHAR(50) UNIQUE NOT NULL, 
-    role VARCHAR(50),
     PRIMARY KEY(user_ID),
     FOREIGN KEY (password_ID) REFERENCES Passwords(password_ID) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Organization (
-	org_ID VARCHAR(20),
-    password_ID VARCHAR(20),
+	org_ID VARCHAR(50),
+    password_ID VARCHAR(50),
     name VARCHAR(255),
     email VARCHAR(255),
     phone VARCHAR(50),
