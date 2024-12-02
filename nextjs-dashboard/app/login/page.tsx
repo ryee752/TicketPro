@@ -1,8 +1,8 @@
-import AcmeLogo from "@/app/ui/ticketpro-logo";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import LoginForm from "./login";
-import TicketProLogo from "../ui/ticketpro-logo";
+import AcmeLogo from '@/app/ui/ticketpro-logo';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import Link from 'next/link';
+import UserOrOrganization from './login';
+import TicketProLogo from '../ui/ticketpro-logo';
 
 export default function Page() {
   return (
@@ -12,7 +12,7 @@ export default function Page() {
       </div>
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
         <div className="flex flex-col justify-center gap-6 rounded-lg bg-gray-50 px-6 py-10 md:w-2/5 md:px-20">
-          <LoginForm />
+          <UserOrOrganization/>
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           {/* Add Hero Images Here */}
