@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 
 type Event = {
   event_id: string;
+  org_id: string;
+  title: string;
   start_time: string;
   end_time: string;
   date: string;
@@ -15,130 +17,107 @@ type Event = {
   city: string;
   state: string;
   zipcode: string;
+  image: string; // BLOB data encoded as base64
+  type: string;
+  description: string;
 };
-
-const sampleEventData: Event[] = [
-  {
-    event_id: "EV001",
-    start_time: "2024-12-01 18:00:00",
-    end_time: "2024-12-01 21:00:00",
-    date: "2024-12-01",
-    capacity: 100,
-    waitlist_capacity: 20,
-    price: 50.0,
-    street: "123 Main St",
-    city: "New York",
-    state: "NY",
-    zipcode: "10001",
-  },
-  {
-    event_id: "EV002",
-    start_time: "2024-12-05 14:00:00",
-    end_time: "2024-12-05 16:00:00",
-    date: "2024-12-05",
-    capacity: 50,
-    waitlist_capacity: 10,
-    price: 25.5,
-    street: "456 Elm St",
-    city: "Los Angeles",
-    state: "CA",
-    zipcode: "90001",
-  },
-  {
-    event_id: "EV003",
-    start_time: "2024-12-10 19:30:00",
-    end_time: "2024-12-10 22:00:00",
-    date: "2024-12-10",
-    capacity: 200,
-    waitlist_capacity: 50,
-    price: 75.0,
-    street: "789 Oak Ave",
-    city: "Chicago",
-    state: "IL",
-    zipcode: "60601",
-  },
-  {
-    event_id: "EV004",
-    start_time: "2024-12-15 09:00:00",
-    end_time: "2024-12-15 12:00:00",
-    date: "2024-12-15",
-    capacity: 80,
-    waitlist_capacity: 15,
-    price: 30.0,
-    street: "321 Maple Rd",
-    city: "Houston",
-    state: "TX",
-    zipcode: "77001",
-  },
-  {
-    event_id: "EV005",
-    start_time: "2024-12-20 20:00:00",
-    end_time: "2024-12-20 23:59:00",
-    date: "2024-12-20",
-    capacity: 150,
-    waitlist_capacity: 25,
-    price: 100.0,
-    street: "654 Pine Ln",
-    city: "Miami",
-    state: "FL",
-    zipcode: "33101",
-  },
-];
 
 export default function EventList() {
   const [events, setEvents] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(false); // Loading state
+  const [hasMore, setHasMore] = useState(true); // To determine if more data is available
+
+  const fetchEvents = async () => {
+    if (loading || !hasMore) return; // Prevent multiple fetches or fetching when no more data
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`/api/events`);
+      if (!response.ok) throw new Error("Failed to fetch events");
+
+      const data = await response.json();
+
+      // Assuming the API wraps the events in an object, extract the array
+      const newEvents = Array.isArray(data) ? data : data.events || [];
+
+      setEvents((prevEvents) => [...newEvents]); // Append new events
+      setHasMore(newEvents.length > 0); // If no events are returned, stop fetching
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // In a real app, fetch the data from an API
-    setEvents(sampleEventData); // Simulated fetch
+    fetchEvents(); // Fetch events when the component mounts
   }, []);
 
   return (
     <main className="min-h-screen bg-gray-100">
       {/* Header with "Create Event" Button */}
-      <div className="flex items-center justify-between bg-blue-500 p-4 text-white">
+      <div className="relative flex items-center justify-between bg-blue-500 p-4 text-white">
         <h1 className="text-xl font-bold">Event List</h1>
         <Link
           href="/events/create_event"
-          className="bg-white text-blue-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
+          className="absolute right-4 bg-white text-blue-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
         >
           Create Event
         </Link>
       </div>
 
-      {/* Event List Table */}
-      <div className="p-6">
-        <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-          <table className="min-w-full table-auto">
-            <thead>
-              <tr className="bg-gray-200 text-left text-sm uppercase text-gray-700">
-                <th className="px-4 py-2">Event ID</th>
-                <th className="px-4 py-2">Date</th>
-                <th className="px-4 py-2">Start Time</th>
-                <th className="px-4 py-2">End Time</th>
-                <th className="px-4 py-2">Capacity</th>
-                <th className="px-4 py-2">Price</th>
-                <th className="px-4 py-2">Location</th>
-              </tr>
-            </thead>
-            <tbody>
-              {events.map((event) => (
-                <tr key={event.event_id} className="border-b">
-                  <td className="px-4 py-2">{event.event_id}</td>
-                  <td className="px-4 py-2">{event.date}</td>
-                  <td className="px-4 py-2">{event.start_time}</td>
-                  <td className="px-4 py-2">{event.end_time}</td>
-                  <td className="px-4 py-2">{event.capacity}</td>
-                  <td className="px-4 py-2">${event.price.toFixed(2)}</td>
-                  <td className="px-4 py-2">
-                    {event.street}, {event.city}, {event.state}, {event.zipcode}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {/* Event Cards */}
+      <div className="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {events.map((event) => (
+          <Link key={event.event_id} href={`/events/${event.event_id}`}>
+            <div
+              key={event.event_id}
+              className="bg-white rounded-lg shadow-md overflow-hidden"
+            >
+              {/* Event Image */}
+              {event.image && (
+                <img
+                  src={`data:image/jpeg;base64,${event.image}`} // Convert BLOB to base64
+                  alt={event.event_id}
+                  className="w-full h-48 object-cover"
+                />
+              )}
+
+              {/* Event Details */}
+              <div className="p-4">
+                <h2 className="text-lg font-bold">{event.title}</h2>
+                <p className="text-sm text-gray-600">
+                  {event.city}, {event.state}
+                </p>
+                <p className="text-sm text-gray-600 mt-1">
+                  {new Date(event.start_time).toLocaleDateString()}{" "}
+                  {new Date(event.start_time).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p>
+                {event.type && (
+                  <span
+                    className={`inline-block mt-2 px-3 py-1 text-sm font-semibold rounded-full ${
+                      event.type === "Conferences"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-purple-100 text-purple-800"
+                    }`}
+                  >
+                    {event.type}
+                  </span>
+                )}
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
+
+      {loading && <p className="text-center mt-4">Loading more events...</p>}
+      {!hasMore && (
+        <p className="text-center mt-4">No more events available.</p>
+      )}
     </main>
   );
 }

@@ -11,7 +11,7 @@ export default function Page() {
         <TicketProLogo />
       </div>
       <div className="flex grow items-center justify-center bg-gray-100">
-        <div className="w-full max-w-2xl p-6">
+        <div className="w-full p-6">
           <CreateEventForm />
         </div>
       </div>
