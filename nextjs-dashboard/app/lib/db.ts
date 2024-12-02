@@ -1,5 +1,5 @@
-import mysql from 'mysql2';
-import dotenv from 'dotenv';
+import mysql from "mysql2";
+import dotenv from "dotenv";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -15,10 +15,11 @@ const connection = mysql.createConnection({
 // Verify connection
 connection.connect((err) => {
   if (err) {
-    console.error('Error connecting to the database:', err.stack);
+    console.error("Error connecting to the database:", err.stack);
     return;
   }
-  console.log('Connected to the database as id ' + connection.threadId);
+  console.log("Connected to the database as id " + connection.threadId);
+
 });
 
 export default connection;
