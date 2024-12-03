@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "../../ui/button";
+import { Button } from "../../../ui/button";
 
-export default function CreateEventForm() {
+export default function EditEventForm({ eventId }: { eventId: string }) {
   const [title, setTitle] = useState("");
   const [timeData, setTimeData] = useState({
     start_time: "",
@@ -23,9 +23,66 @@ export default function CreateEventForm() {
   });
   const [eventType, setEventType] = useState("");
   const [description, setDescription] = useState(""); // New state for description
+  const [imageFromDB, setImageFromDB] = useState<any>(null);
   const [image, setImage] = useState<File | null>(null); // New state for image
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const router = useRouter();
+
+  const formatDate = (isoDate: Date) => {
+    const date = new Date(isoDate);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const response = await fetch(`/api/events/${eventId}/event_detail`);
+        if (!response.ok) throw new Error("Failed to fetch event details.");
+
+        const data = await response.json();
+        setTitle(data.event.title);
+
+        setTimeData((prev) => {
+          prev.start_time = formatDate(data.event.start_time);
+          prev.end_time = formatDate(data.event.end_time);
+          return prev;
+        });
+        setNumberInputs((prev) => {
+          prev.capacity = data.event.capacity;
+          prev.waitlist_capacity = data.event.waitlist_capacity;
+          prev.price = data.event.price;
+          return prev;
+        });
+        setStringData((prev) => {
+          prev.street = data.event.street;
+          prev.city = data.event.city;
+          prev.state = data.event.state;
+          prev.zipcode = data.event.zipcode;
+          return prev;
+        });
+        setEventType(data.event.type);
+        setDescription(data.event.description);
+
+        if (data.event.image) {
+          setImageFromDB(data.event.image);
+        }
+      } catch (err) {
+        setError("Failed to load event details.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEventDetails();
+  }, [eventId]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -54,25 +111,36 @@ export default function CreateEventForm() {
       formData.append("image", image); // Attach the image file
     }
 
-    const response = await fetch("/api/events/create_event", {
+    formData.append("event_id", eventId);
+
+    const response = await fetch(`/api/events/${eventId}/edit_event`, {
       method: "POST",
       body: formData,
     });
 
     if (response.ok) {
-      console.log("Event created successfully");
-      router.push("/events");
+      console.log("Event edited successfully");
+      router.push(`/events/${eventId}/event_detail`);
     } else {
-      console.error("Failed to create event");
+      console.error("Failed to edit event");
     }
   };
+
+  let image64 = null;
+  if (imageFromDB) {
+    image64 = Buffer.from(imageFromDB).toString("base64");
+  }
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+  if (!event) return <p>Event not found.</p>;
 
   return (
     <form className="space-y-3" onSubmit={handleSubmit}>
       <div className="flex flex-col md:flex-row gap-6 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         {/* Left Column: Image Upload and Description */}
         <div className="flex-1">
-          <h1 className="mb-3 text-2xl font-bold">Create New Event</h1>
+          <h1 className="mb-3 text-2xl font-bold">Edit Event</h1>
           <div className="mt-4">
             <label
               htmlFor="image_url"
@@ -87,7 +155,16 @@ export default function CreateEventForm() {
               className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer focus:outline-none"
             />
             {/* Preview the image if the URL is valid */}
-            {image && (
+            {!image ? (
+              <div className="mt-4">
+                <img
+                  src={`data:image/jpeg;base64,${image64}`}
+                  alt="Event Preview"
+                  className="rounded-md w-full max-h-100 object-contain"
+                  onError={(e) => (e.currentTarget.style.display = "none")} // Hide preview if the URL is invalid
+                />
+              </div>
+            ) : (
               <div className="mt-4">
                 <img
                   src={URL.createObjectURL(image)}
@@ -239,7 +316,7 @@ export default function CreateEventForm() {
         </div>
       </div>
       <Button type="submit" className="mt-4 w-full">
-        Create Event
+        Edit Event
       </Button>
     </form>
   );

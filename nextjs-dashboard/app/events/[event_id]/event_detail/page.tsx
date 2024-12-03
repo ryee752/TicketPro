@@ -1,5 +1,5 @@
-import TicketProLogo from "../../ui/ticketpro-logo";
-import EventDetailPage from "./eventDetail";
+import TicketProLogo from "../../../ui/ticketpro-logo";
+import EventDetailPage from "./event_detail";
 
 export default async function Page({
   params,

@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import TicketQuantity from "./component/ticketQuantity";
 
 type Event = {
   event_id: string;
@@ -29,7 +31,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
   useEffect(() => {
     const fetchEventDetails = async () => {
       try {
-        const response = await fetch(`/api/events/${eventId}`);
+        const response = await fetch(`/api/events/${eventId}/event_detail`);
         if (!response.ok) throw new Error("Failed to fetch event details.");
 
         const data = await response.json();
@@ -48,12 +50,25 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
   if (error) return <p className="text-red-500">{error}</p>;
   if (!event) return <p>Event not found.</p>;
 
+  let image = null;
+
+  if (event.image) {
+    image = Buffer.from(event.image).toString("base64");
+  }
   return (
     <main className="min-h-screen bg-gray-100">
+      <div className="relative flex items-center justify-between text-white mb-10">
+        <Link
+          href={`/events/${eventId}/edit_event`}
+          className="absolute right-0 bg-blue-500 text-white-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
+        >
+          Edit Event
+        </Link>
+      </div>
       {/* Hero Section */}
       <div className="relative bg-white shadow-md">
         <img
-          src={`data:image/jpeg;base64,${event.image}`}
+          src={`data:image/jpeg;base64,${image}`}
           alt={event.title}
           className="w-full h-100 object-cover rounded-b-lg"
         />
@@ -63,50 +78,51 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
       </div>
 
       {/* Event Details Section */}
-      <div className="p-6 max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold">{event.title}</h1>
-        <p className="mt-2 text-sm text-gray-600">
-          Hosted by{" "}
-          <span className="font-medium text-gray-900">{event.org_name}</span>
-        </p>
+      <div className="max-w-6xl mx-auto mt-4">
+        <div className="bg-white shadow-lg rounded-lg text-right">
+          <h1 className="text-3xl font-bold pl-2 text-center">{event.title}</h1>
+          <p className="mt-2 text-sm text-gray-600 pr-2">
+            Hosted by{" "}
+            <span className="font-medium text-gray-900">{event.org_name}</span>
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
           {/* Left Column: Event Details */}
-          <div>
-            <h2 className="text-xl font-bold mb-2">Event Information</h2>
-            <p className="text-gray-700 whitespace-pre-line">
-              {event.description}
-            </p>
-
+          <div className="bg-white shadow-lg rounded-lg p-2">
+            <h2 className="text-xl font-bold mb-2 ">Event Information</h2>
             <div className="mt-4">
-              <p className="text-sm text-gray-600">
-                <strong>Date:</strong>{" "}
-                {new Date(event.start_time).toLocaleDateString()}
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Time:</strong>{" "}
-                {new Date(event.start_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}{" "}
-                -{" "}
-                {new Date(event.end_time).toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
+              <h2 className="text-md font-bold mb-2">
+                <strong>Date/Time:</strong>{" "}
+              </h2>
+              <p className="text-gray-700 whitespace-pre-line">
+                {`${new Date(event.start_time).toLocaleString()} - ${new Date(
+                  event.end_time
+                ).toLocaleString()}`}
               </p>
             </div>
 
             <div className="mt-4">
-              <p className="text-sm text-gray-600">
-                <strong>Location:</strong> {event.street}, {event.city},{" "}
-                {event.state} {event.zipcode}
+              <h2 className="text-md font-bold mb-2">
+                <strong>Location:</strong>
+              </h2>
+              <p className="text-gray-700 whitespace-pre-line">
+                {event.street}, {event.city}, {event.state} {event.zipcode}
+              </p>
+            </div>
+
+            <div className="mt-4">
+              <h2 className="text-md font-bold mb-2">
+                <strong>Description:</strong>
+              </h2>
+              <p className="text-gray-700 whitespace-pre-line">
+                {event.description}
               </p>
             </div>
           </div>
 
           {/* Right Column: Pricing and Actions */}
-          <div className="p-6 bg-white shadow-lg rounded-lg">
+          <div className="p-6 bg-white shadow-lg rounded-lg max-h-64">
             <h2 className="text-2xl font-bold mb-4">
               ${event.price}
               <span className="text-sm font-medium text-gray-500">
@@ -115,9 +131,13 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
               </span>
             </h2>
 
-            <button className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-blue-600">
+            <button className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600">
               Buy Tickets
             </button>
+            {/* Ticket Quantity Component */}
+            <div className="mt-4 max-2-sm">
+              <TicketQuantity />
+            </div>
 
             <div className="mt-4">
               <p className="text-sm text-gray-600">
