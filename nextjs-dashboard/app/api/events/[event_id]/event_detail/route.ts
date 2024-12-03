@@ -1,4 +1,4 @@
-import connection from "../../../lib/db";
+import connection from "../../../../lib/db";
 import { NextResponse } from "next/server";
 import { RowDataPacket } from "mysql2";
 
@@ -82,9 +82,9 @@ export async function GET(
       const event = results[0] as Event;
 
       // Convert the image BLOB to base64 if it exists
-      if (event.image) {
-        event.image = Buffer.from(event.image).toString("base64");
-      }
+      // if (event.image) {
+      //   event.image = Buffer.from(event.image).toString("base64");
+      // }
 
       // Return the event details
       console.log("Read event detail successfully:", event);
