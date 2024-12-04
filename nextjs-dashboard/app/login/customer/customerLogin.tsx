@@ -1,53 +1,58 @@
 "use client";
-import { lusitana } from '../../ui/fonts';
+import { lusitana } from "../../ui/fonts";
 import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
-} from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from '../../ui/button';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+} from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { Button } from "../../ui/button";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { storeLoginInfo } from "@/app/lib/feature/currentLogin";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [formError, setFormError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Simple validation
     if (!email || !password) {
-      setFormError('Please fill in all fields.');
+      setFormError("Please fill in all fields.");
       return;
     }
 
     // If validation passes, redirect to the dashboard
-    setFormError(''); // Clear any previous errors
-    const response = await fetch('../../api/login/customer', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    setFormError(""); // Clear any previous errors
+    const response = await fetch("../../api/login/customer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
 
     if (response.ok) {
       // The request was successful
       const result = await response.json(); // If the server returns JSON data
-      console.log(result); // Process the result
-      router.push('../dashboard');
+      dispatch(
+        storeLoginInfo({
+          id: result.user.id,
+          type: "user",
+        })
+      ); // Process the result
+      router.push("../events");
     } else {
       // The request failed
-      console.error('Login failed');
+      console.error("Login failed");
       alert("Invalid User, please try again");
     }
-    
   };
-
-
 
   return (
     <form className="space-y-3" onSubmit={handleSubmit}>
@@ -116,7 +121,9 @@ export default function LoginForm() {
 
         <div className="mt-4">
           <Link href="/signup">
-            <span className="text-blue-600">Don't have an account? Sign up here</span>{' '}
+            <span className="text-blue-600">
+              Don't have an account? Sign up here
+            </span>{" "}
             <ArrowRightIcon className="w-5 md:w-6 inline" />
           </Link>
         </div>
