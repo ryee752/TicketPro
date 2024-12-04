@@ -38,7 +38,8 @@ export async function GET(
     // SQL query to fetch the event details
     const sql = `
   SELECT 
-    e.event_id, 
+    e.event_id,
+    e.org_id,
     e.title, 
     e.start_time, 
     e.end_time, 

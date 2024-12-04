@@ -1,54 +1,61 @@
-"use client"
-import { lusitana } from '../../ui/fonts';
+"use client";
+import { lusitana } from "../../ui/fonts";
 import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
   PencilSquareIcon,
   PhoneIcon,
-} from '@heroicons/react/24/outline';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
-import { Button } from '../../ui/button';
-import Link from 'next/link';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
+} from "@heroicons/react/24/outline";
+import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { Button } from "../../ui/button";
+import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { storeLoginInfo } from "@/app/lib/feature/currentLogin";
 
 export default function SignUpForm() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [first, setFirst] = useState('');
-  const [last, setLast] = useState('');
-  const [phone, setPhone] = useState('');
-  const [formError, setFormError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [first, setFirst] = useState("");
+  const [last, setLast] = useState("");
+  const [phone, setPhone] = useState("");
+  const [formError, setFormError] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Simple validation
     if (!email || !password || !first || !last || !phone) {
-      setFormError('Please fill in all fields.');
+      setFormError("Please fill in all fields.");
       return;
     }
 
-    setFormError(''); // Clear any previous errors
-    
-    //Inserting data 
-    const response = await fetch('../../api/signup/customer', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    setFormError(""); // Clear any previous errors
+
+    //Inserting data
+    const response = await fetch("../../api/signup/customer", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ first, last, phone, email, password }),
     });
 
     if (response.ok) {
       // The request was successful
       const result = await response.json(); // If the server returns JSON data
-      console.log(result); // Process the result
-      router.push('../../dashboard');
+      dispatch(
+        storeLoginInfo({
+          id: result.user.id,
+          type: "user",
+        })
+      ); // Process the result
+      router.push("../../events");
     } else {
       // The request failed
-      console.error('Registration failed');
+      console.error("Registration failed");
     }
   };
 
@@ -176,11 +183,12 @@ export default function SignUpForm() {
 
           <div>
             <Button type="submit" className="mt-4 w-full">
-              Sign Up <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+              Sign Up{" "}
+              <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
             </Button>
           </div>
         </div>
-        </div>
+      </div>
     </form>
   );
 }
