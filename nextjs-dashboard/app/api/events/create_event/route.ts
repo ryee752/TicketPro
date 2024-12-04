@@ -101,7 +101,7 @@ export async function createEvent(
 
     // Set default or calculated fields
     const event_id = uuidv4(); // Generate a unique ID for the event
-    const org_id = "3193db8f-d359-48d6-9289-3efaf3bfb78f"; // Hardcode or dynamically fetch the org_id
+    const org_id = "ab6d9ede-39dc-4332-ba68-4311269814d3"; // Hardcode or dynamically fetch the org_id
     const date = new Date().toISOString().split("T")[0];
     const availability = parseInt(capacity) > 0 ? "available" : "unavailable";
 
