@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import TicketQuantity from "./component/ticketQuantity";
 
@@ -24,6 +25,7 @@ type Event = {
 };
 
 export default function EventDetailPage({ eventId }: { eventId: string }) {
+  const router = useRouter();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -45,6 +47,10 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
 
     fetchEventDetails();
   }, [eventId]);
+
+  const handleBuyTickets = () => {
+    router.push(`/payment?eventId=${eventId}`);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -131,7 +137,10 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
               </span>
             </h2>
 
-            <button className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600">
+            <button 
+              className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600"
+              onClick={handleBuyTickets}
+            >
               Buy Tickets
             </button>
             {/* Ticket Quantity Component */}
