@@ -1,5 +1,5 @@
 import { lusitana } from '@/app/ui/fonts';
-import TicketProLogo from "../ui/ticketpro-logo";
+import TicketProLogo from "../../ui/ticketpro-logo";
 import PopularEvents from "./components/popular-events";
 import UpcomingList from "./components/upcoming-events";
 import PopularOrganizations from "./components/popular-organizations";
@@ -36,10 +36,6 @@ export default async function Page() {
         </h2>
       </div>
       <PopularOrganizations />
-
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
-        <h2 className="text-2xl font-semibold mb-4">Hello hello</h2>
-      </div>
 
       {/* Organization view only */}
       {/* Organization's upcoming events, displaying the ones in progress now and upcoming events 

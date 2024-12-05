@@ -52,7 +52,7 @@ export default function SignUpForm() {
           type: "user",
         })
       ); // Process the result
-      router.push("../../events");
+      router.push("../../dashboard/home");
     } else {
       // The request failed
       console.error("Registration failed");

@@ -1,4 +1,4 @@
-import TicketProLogo from "../ui/ticketpro-logo";
+import TicketProLogo from "../../ui/ticketpro-logo";
 
 import React from 'react';
 import { 

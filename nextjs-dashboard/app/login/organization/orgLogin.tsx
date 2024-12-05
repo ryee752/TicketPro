@@ -46,7 +46,7 @@ export default function LoginForm() {
           type: "organization",
         })
       ); // Process the result
-      router.push("../dashboard");
+      router.push("../dashboard/home");
     } else {
       // The request failed
       console.error("Login failed");

@@ -12,7 +12,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../lib/store";
+import { RootState } from "../../../lib/store";
 
 type Event = {
   event_id: string;
@@ -31,8 +31,6 @@ type Event = {
   image: string; // BLOB data encoded as base64
   type: string;
   description: string;
-  tickets_sold: number;
-  spots_left: number;
 };
 
 export default function EventList() {
@@ -45,13 +43,22 @@ export default function EventList() {
     setLoading(true);
 
     try {
-      // const params = new URLSearchParams({ //passes parameters to api/home/user/popular-events/route.tsx
-      //    user_id: login.id //This should ALWAYS be a user_id not an org_id here. if login.type is organization, there is a problem
-      // });
-      // const response = await fetch(`/api/home/user/popular-events?${params.toString()}`);
+      const params = new URLSearchParams({ //parameters to be passed to route.ts
+          current_id: login.id //this is the ID of either the organization or the user currently signed in which is passed to route.ts
+      });
+      
+      let response;
+      if(login.type === "organization") { //If the current user is an organization, pass parameters to api/home/organization/upcoming-events/route.ts
+        response = await fetch(`/api/home/organization/upcoming-events?${params.toString()}`);
+      }
+      else if(login.type === "user") { //If current user is a regular user, pass parameters to api/home/user/upcoming-events/route.ts
+        response = await fetch(`/api/home/user/upcoming-events?${params.toString()}`);
+      }
+      else { //Otherwise, the current user is of unknown type
+        throw new Error("Unknown user type for login: Failed to fetch events");
+      }
     
-      const response = await fetch(`/api/home/organization/popular-events`); //No need to pass parameters for this query
-      if (!response.ok) throw new Error("Failed to fetch events");
+      if (!response.ok) throw new Error("Failed to fetch events"); //Could not fetch events from database
 
       const data = await response.json();
       const newEvents = Array.isArray(data) ? data : data.events || [];
@@ -102,8 +109,11 @@ export default function EventList() {
                     {event.city}, {event.state}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
-                    {/* Display # of Tickets sold and how many spots left */}
-                    {/* Tickets Sold: {event.tickets_sold}, Spots Left: {event.spots_left}  */}
+                    {new Date(event.start_time).toLocaleDateString()}{" "}
+                    {new Date(event.start_time).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </p>
                   {event.type && (
                     <span

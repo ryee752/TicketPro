@@ -72,11 +72,11 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
         ) : null}
       </div>
       {/* Hero Section */}
-      <div className="relative bg-white shadow-md">
+      <div className="relative bg-white shadow-md flex items-center justify-center">
         <img
           src={`data:image/jpeg;base64,${image}`}
           alt={event.title}
-          className="w-full h-100 object-cover rounded-b-lg"
+          className="w-128 h-128 object-cover rounded-b-lg"
         />
         <div className="absolute top-4 left-4 bg-white px-3 py-1 rounded-lg shadow-md text-sm font-medium">
           {event.type}

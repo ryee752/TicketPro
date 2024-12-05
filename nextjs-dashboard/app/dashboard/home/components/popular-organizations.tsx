@@ -12,7 +12,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../lib/store";
+import { RootState } from "../../../lib/store";
 
 type Organization = {
   org_id: string;
