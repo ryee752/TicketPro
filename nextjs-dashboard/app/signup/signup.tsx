@@ -1,18 +1,8 @@
 "use client"
 import { lusitana } from '../ui/fonts';
-import {
-  AtSymbolIcon,
-  KeyIcon,
-  ExclamationCircleIcon,
-  PencilSquareIcon,
-  PhoneIcon,
-  HomeIcon,
-  GlobeAltIcon,
-} from '@heroicons/react/24/outline';
+
 import { ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '../ui/button';
-import Link from 'next/link';
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 

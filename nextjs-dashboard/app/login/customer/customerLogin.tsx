@@ -8,9 +8,9 @@ import {
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "../../ui/button";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { storeLoginInfo } from "@/app/lib/feature/currentLogin";
 
 export default function LoginForm() {
@@ -19,6 +19,16 @@ export default function LoginForm() {
   const [formError, setFormError] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
+
+
+  const currentLogin = useSelector((state: any) => state.currentLogin.value);
+  // console.log("ID:" + currentLogin.value);
+  // Redirect if already logged in
+  useEffect(() => {
+    if (currentLogin !== -1) {
+      router.push("../../events");
+    }
+  }, [currentLogin, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,6 +85,7 @@ export default function LoginForm() {
                 type="email"
                 name="email"
                 placeholder="Enter your email address"
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
