@@ -26,7 +26,7 @@ export default function LoginForm() {
   // Redirect if already logged in
   useEffect(() => {
     if (currentLogin !== -1) {
-      router.push("../../events");
+      router.push("../../dashboard/home");
     }
   }, [currentLogin, router]);
 
@@ -56,7 +56,7 @@ export default function LoginForm() {
           type: "user",
         })
       ); // Process the result
-      router.push("../events");
+      router.push("../dashboard/home");
     } else {
       // The request failed
       console.error("Login failed");

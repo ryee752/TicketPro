@@ -29,7 +29,7 @@ export default function SignUpForm() {
   // Redirect if already logged in
   useEffect(() => {
     if (currentLogin !== -1) {
-      router.push("../../events");
+      router.push("../../dashboard/home");
     }
   }, [currentLogin, router]);
 
@@ -61,7 +61,7 @@ export default function SignUpForm() {
           type: "user",
         })
       ); // Process the result
-      router.push("../../events");
+      router.push("../../dashboard/home");
     } else {
       // The request failed
       const err = await response.json(); 
