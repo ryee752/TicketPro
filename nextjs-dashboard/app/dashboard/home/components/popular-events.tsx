@@ -124,7 +124,7 @@ export default function EventList() {
       </div>
 
       {loading && <p className="text-center mt-4">Loading more events...</p>}
-      {!hasMore && (
+      {!hasMore && events.length === 0 && (
         <p className="text-center mt-4">No events found.</p>
       )}
     </main>

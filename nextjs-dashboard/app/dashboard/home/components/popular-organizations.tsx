@@ -88,7 +88,7 @@ export default function OrgList() {
       </div>
 
       {loading && <p className="text-center mt-4">Loading more events...</p>}
-      {!hasMore && (
+      {!hasMore && organizations.length === 0 && (
         <p className="text-center mt-4">No events found.</p>
       )}
     </main>
