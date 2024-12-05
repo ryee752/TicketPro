@@ -34,6 +34,10 @@ export default function EventList() {
     category: "",
     minPrice: "",
     maxPrice: "",
+    genre: "",
+    speaker_name: "",
+    instructor_name: "",
+    topic: "",
   });
   const [loading, setLoading] = useState(false);
   const login = useSelector((state: RootState) => state.currentLogin.value);
@@ -48,6 +52,10 @@ export default function EventList() {
         category: filters.category || "",
         minPrice: filters.minPrice || "0",
         maxPrice: filters.maxPrice || "9999999",
+        genre: filters.genre || "",
+        speaker_name: filters.speaker_name || "",
+        instructor_name: filters.instructor_name || "",
+        topic: filters.topic || "",
       });
 
       const response = await fetch(`/api/events?${params.toString()}`);
@@ -56,7 +64,6 @@ export default function EventList() {
       const data = await response.json();
       const newEvents = Array.isArray(data) ? data : data.events || [];
       setEvents(newEvents);
-      // setFilteredEvents(newEvents); // Initialize with all events
       setHasMore(newEvents.length > 0);
     } catch (error) {
       console.error("Error fetching events:", error);
@@ -72,6 +79,10 @@ export default function EventList() {
     filters.category,
     filters.maxPrice,
     filters.minPrice,
+    filters.genre,
+    filters.speaker_name,
+    filters.instructor_name,
+    filters.topic,
     searchQuery,
   ]);
 
@@ -91,7 +102,7 @@ export default function EventList() {
 
   return (
     <main className="min-h-screen bg-gray-100">
-      {/* Header with "Create Event" Button */}
+      {/* Header */}
       <div className="relative flex items-center justify-between bg-blue-500 p-4 text-white">
         <h1 className="text-xl font-bold">Event List</h1>
         {login.type === "organization" ? (
@@ -104,10 +115,9 @@ export default function EventList() {
         ) : null}
       </div>
 
-      {/* Search and Filter Section */}
+      {/* Filters */}
       <div className="p-6 bg-white shadow-md">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          {/* Search Input */}
           <input
             type="text"
             value={searchQuery}
@@ -115,8 +125,6 @@ export default function EventList() {
             placeholder="Search by title..."
             className="w-full md:w-1/3 border border-gray-300 rounded-lg p-2"
           />
-
-          {/* Location Filter */}
           <input
             type="text"
             name="location"
@@ -125,8 +133,6 @@ export default function EventList() {
             placeholder="Filter by location..."
             className="w-full md:w-1/3 border border-gray-300 rounded-lg p-2"
           />
-
-          {/* Category Filter */}
           <select
             name="category"
             value={filters.category}
@@ -134,14 +140,11 @@ export default function EventList() {
             className="w-full md:w-1/3 border border-gray-300 rounded-lg p-2"
           >
             <option value="">All Categories</option>
-            <option value="Concert">Concerts</option>
-            <option value="Webinar">Webinars</option>
-            <option value="Conference">Conferences</option>
-            <option value="Workshop">Workshops</option>
-            <option value="Community Gathering">Community Gatherings</option>
+            <option value="Concert">Concert</option>
+            <option value="Webinar">Webinar</option>
+            <option value="Conference">Conference</option>
+            <option value="Workshop">Workshop</option>
           </select>
-
-          {/* Price Range */}
           <div className="flex gap-2">
             <input
               type="number"
@@ -161,6 +164,68 @@ export default function EventList() {
             />
           </div>
         </div>
+
+        {/* Dynamic Inputs */}
+        {filters.category === "Concert" && (
+          <div className="mt-4">
+            <label className="block text-xs font-medium text-gray-900">
+              Genre
+            </label>
+            <input
+              type="text"
+              name="genre"
+              value={filters.genre}
+              onChange={handleFilterChange}
+              placeholder="Filter by genre..."
+              className="w-full border border-gray-300 rounded-lg p-2"
+            />
+          </div>
+        )}
+        {filters.category === "Conference" && (
+          <div className="mt-4">
+            <label className="block text-xs font-medium text-gray-900">
+              Speaker Name
+            </label>
+            <input
+              type="text"
+              name="speaker_name"
+              value={filters.speaker_name}
+              onChange={handleFilterChange}
+              placeholder="Filter by speaker name..."
+              className="w-full border border-gray-300 rounded-lg p-2"
+            />
+          </div>
+        )}
+        {filters.category === "Workshop" && (
+          <>
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-gray-900">
+                Instructor Name
+              </label>
+              <input
+                type="text"
+                name="instructor_name"
+                value={filters.instructor_name}
+                onChange={handleFilterChange}
+                placeholder="Filter by instructor name..."
+                className="w-full border border-gray-300 rounded-lg p-2"
+              />
+            </div>
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-gray-900">
+                Topic
+              </label>
+              <input
+                type="text"
+                name="topic"
+                value={filters.topic}
+                onChange={handleFilterChange}
+                placeholder="Filter by topic..."
+                className="w-full border border-gray-300 rounded-lg p-2"
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {/* Event Cards */}
