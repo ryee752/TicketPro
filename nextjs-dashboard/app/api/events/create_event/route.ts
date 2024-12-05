@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating event:", error);
     return NextResponse.json(
-      { message: "Failed to create event." },
+      { message: "Error creating event" },
       { status: 500 }
     );
   }
@@ -101,7 +101,7 @@ export async function createEvent(
 
     // Set default or calculated fields
     const event_id = uuidv4(); // Generate a unique ID for the event
-    const org_id = "ab6d9ede-39dc-4332-ba68-4311269814d3"; // Hardcode or dynamically fetch the org_id
+    const org_id = "bec44168-b0b9-453a-8ec9-90b8708a1e51"; // Hardcode or dynamically fetch the org_id
     const date = new Date().toISOString().split("T")[0];
     const availability = parseInt(capacity) > 0 ? "available" : "unavailable";
 

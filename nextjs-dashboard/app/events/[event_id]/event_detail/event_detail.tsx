@@ -33,6 +33,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const login = useSelector((state: RootState) => state.currentLogin.value);
+  const [ticketQuantity, setTicketQuantity] = useState(1);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -52,8 +53,8 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
     fetchEventDetails();
   }, [eventId]);
 
-  const handleBuyTickets = () => {
-    router.push(`/payment?eventId=${eventId}`);
+  const handleBuyTickets = (eventId: string, quantity: number) => {
+    router.push(`/payment?eventId=${eventId}&quantity=${quantity}`);
   };
 
   if (loading) return <p>Loading...</p>;
@@ -143,27 +144,17 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
               </span>
             </h2>
 
-<<<<<<< HEAD
-            <button 
-              className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600"
-              onClick={handleBuyTickets}
-            >
-              Buy Tickets
-            </button>
-            {/* Ticket Quantity Component */}
-            <div className="mt-4 max-2-sm">
-              <TicketQuantity />
-            </div>
-=======
             {login.type === "user" ? (
               <div>
-                <button className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600">
+                <button 
+                  onClick={() => handleBuyTickets(eventId, ticketQuantity)}
+                  className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600"
+                >
                   Buy Tickets
                 </button>
->>>>>>> 6d12c59c9eebafd06c9577733c82d9c279bd4ba4
 
                 <div className="mt-4">
-                  <TicketQuantity />
+                  <TicketQuantity onChange={setTicketQuantity} />
                 </div>
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">
