@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { storeLoginInfo } from "@/app/lib/feature/currentLogin";
+import { RootState } from "@/app/lib/store";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -20,8 +21,9 @@ export default function LoginForm() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-
-  const currentLogin = useSelector((state: any) => state.currentLogin.value);
+  const currentLogin = useSelector(
+    (state: RootState) => state.currentLogin.value
+  );
   // console.log("ID:" + currentLogin.value);
   // Redirect if already logged in
   useEffect(() => {

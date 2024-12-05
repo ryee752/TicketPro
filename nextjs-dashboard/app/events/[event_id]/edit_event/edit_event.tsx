@@ -22,9 +22,20 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
     zipcode: "",
   });
   const [eventType, setEventType] = useState("");
+  const [originalType, setOriginalType] = useState("");
   const [description, setDescription] = useState(""); // New state for description
   const [imageFromDB, setImageFromDB] = useState<any>(null);
   const [image, setImage] = useState<File | null>(null); // New state for image
+
+  // Specialized inputs
+  const [specializedData, setSpecializedData] = useState({
+    genre: "",
+    event_link: "",
+    access_code: "",
+    speaker_name: "",
+    instructor_name: "",
+    topic: "",
+  });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -50,30 +61,42 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
         const data = await response.json();
         setTitle(data.event.title);
 
-        setTimeData((prev) => {
-          prev.start_time = formatDate(data.event.start_time);
-          prev.end_time = formatDate(data.event.end_time);
-          return prev;
-        });
-        setNumberInputs((prev) => {
-          prev.capacity = data.event.capacity;
-          prev.waitlist_capacity = data.event.waitlist_capacity;
-          prev.price = data.event.price;
-          return prev;
-        });
-        setStringData((prev) => {
-          prev.street = data.event.street;
-          prev.city = data.event.city;
-          prev.state = data.event.state;
-          prev.zipcode = data.event.zipcode;
-          return prev;
-        });
+        setTimeData((prev) => ({
+          ...prev,
+          start_time: formatDate(data.event.start_time),
+          end_time: formatDate(data.event.end_time),
+        }));
+        setNumberInputs((prev) => ({
+          ...prev,
+          capacity: data.event.capacity,
+          waitlist_capacity: data.event.waitlist_capacity,
+          price: data.event.price,
+        }));
+        setStringData((prev) => ({
+          ...prev,
+          street: data.event.street,
+          city: data.event.city,
+          state: data.event.state,
+          zipcode: data.event.zipcode,
+        }));
         setEventType(data.event.type);
+        setOriginalType(data.event.type);
         setDescription(data.event.description);
 
         if (data.event.image) {
           setImageFromDB(data.event.image);
         }
+
+        // Set specialized data for the specific event type
+        setSpecializedData((prev) => ({
+          ...prev,
+          genre: data.event.genre || "",
+          event_link: data.event.event_link || "",
+          access_code: data.event.access_code || "",
+          speaker_name: data.event.speaker_name || "",
+          instructor_name: data.event.instructor_name || "",
+          topic: data.event.topic || "",
+        }));
       } catch (err) {
         setError("Failed to load event details.");
       } finally {
@@ -106,13 +129,26 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
     formData.append("zipcode", stringData.zipcode);
     formData.append("type", eventType);
     formData.append("description", description);
-
-    if (image) {
-      formData.append("image", image); // Attach the image file
-    }
-
     formData.append("event_id", eventId);
 
+    if (image) {
+      formData.append("image", image); // Attach the image file if updated
+    }
+
+    // Add type-specific fields
+    if (eventType === "Concert") {
+      formData.append("genre", specializedData.genre);
+    } else if (eventType === "Webinar") {
+      formData.append("event_link", specializedData.event_link);
+      formData.append("access_code", specializedData.access_code);
+    } else if (eventType === "Conference") {
+      formData.append("speaker_name", specializedData.speaker_name);
+    } else if (eventType === "Workshop") {
+      formData.append("instructor_name", specializedData.instructor_name);
+      formData.append("topic", specializedData.topic);
+    }
+
+    formData.append("original_type", originalType);
     const response = await fetch(`/api/events/${eventId}/edit_event`, {
       method: "POST",
       body: formData,
@@ -123,6 +159,29 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
       router.push(`/events/${eventId}/event_detail`);
     } else {
       console.error("Failed to edit event");
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = confirm(
+      "Are you sure you want to delete this event? This action cannot be undone."
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`/api/events/${eventId}/delete_event`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        console.log("Event deleted successfully");
+        router.push("/events");
+      } else {
+        console.error("Failed to delete event");
+      }
+    } catch (err) {
+      console.error("Error deleting event:", err);
     }
   };
 
@@ -289,34 +348,138 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
 
           {/* Dropdown for Event Type */}
           <div className="mt-4">
-            <label
-              htmlFor="eventType"
-              className="mb-3 block text-xs font-medium text-gray-900"
-            >
+            <label className="block text-xs font-medium text-gray-900">
               EVENT TYPE
             </label>
             <select
-              className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm"
-              id="eventType"
-              name="eventType"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
               value={eventType}
-              required
               onChange={(e) => setEventType(e.target.value)}
             >
-              <option value="" disabled>
-                Select Event Type
-              </option>
+              <option value="">Select Event Type</option>
               <option value="Concert">Concert</option>
               <option value="Webinar">Webinar</option>
               <option value="Conference">Conference</option>
               <option value="Workshop">Workshop</option>
-              <option value="Community Gathering">Community Gathering</option>
             </select>
           </div>
+
+          {/* Specialized Inputs */}
+          {eventType === "Concert" && (
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-gray-900">
+                GENRE
+              </label>
+              <input
+                className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                value={specializedData.genre}
+                onChange={(e) =>
+                  setSpecializedData({
+                    ...specializedData,
+                    genre: e.target.value,
+                  })
+                }
+              />
+            </div>
+          )}
+          {eventType === "Webinar" && (
+            <>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-900">
+                  EVENT LINK
+                </label>
+                <input
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                  value={specializedData.event_link}
+                  onChange={(e) =>
+                    setSpecializedData({
+                      ...specializedData,
+                      event_link: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-900">
+                  ACCESS CODE
+                </label>
+                <input
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                  value={specializedData.access_code}
+                  onChange={(e) =>
+                    setSpecializedData({
+                      ...specializedData,
+                      access_code: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </>
+          )}
+          {eventType === "Conference" && (
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-gray-900">
+                SPEAKER NAME
+              </label>
+              <input
+                className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                value={specializedData.speaker_name}
+                onChange={(e) =>
+                  setSpecializedData({
+                    ...specializedData,
+                    speaker_name: e.target.value,
+                  })
+                }
+              />
+            </div>
+          )}
+          {eventType === "Workshop" && (
+            <>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-900">
+                  INSTRUCTOR NAME
+                </label>
+                <input
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                  value={specializedData.instructor_name}
+                  onChange={(e) =>
+                    setSpecializedData({
+                      ...specializedData,
+                      instructor_name: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-900">
+                  TOPIC
+                </label>
+                <input
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                  value={specializedData.topic}
+                  onChange={(e) =>
+                    setSpecializedData({
+                      ...specializedData,
+                      topic: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
       <Button type="submit" className="mt-4 w-full">
         Edit Event
+      </Button>
+
+      {/* Delete Button */}
+      <Button
+        type="button"
+        className="mt-4 w-full bg-red-500 hover:bg-red-600 text-white"
+        onClick={handleDelete}
+      >
+        Delete Event
       </Button>
     </form>
   );
