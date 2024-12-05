@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating event:", error);
     return NextResponse.json(
-      { message: "Failed to create event." },
+      { message: "Error creating event" },
       { status: 500 }
     );
   }
@@ -109,6 +109,8 @@ export async function createEvent(
 
     // Set default or calculated fields
     const event_id = uuidv4(); // Generate a unique ID for the event
+
+
     const date = new Date().toISOString().split("T")[0];
     const availability = parseInt(capacity) > 0 ? "available" : "unavailable";
 

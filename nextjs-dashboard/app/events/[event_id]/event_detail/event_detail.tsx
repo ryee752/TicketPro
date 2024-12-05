@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import TicketQuantity from "./component/ticketQuantity";
 import { useSelector } from "react-redux";
@@ -27,10 +28,12 @@ type Event = {
 };
 
 export default function EventDetailPage({ eventId }: { eventId: string }) {
+  const router = useRouter();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const login = useSelector((state: RootState) => state.currentLogin.value);
+  const [ticketQuantity, setTicketQuantity] = useState(1);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -49,6 +52,10 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
 
     fetchEventDetails();
   }, [eventId]);
+
+  const handleBuyTickets = (eventId: string, quantity: number) => {
+    router.push(`/payment?eventId=${eventId}&quantity=${quantity}`);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -139,12 +146,15 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
 
             {login.type === "user" ? (
               <div>
-                <button className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600">
+                <button 
+                  onClick={() => handleBuyTickets(eventId, ticketQuantity)}
+                  className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600"
+                >
                   Buy Tickets
                 </button>
 
                 <div className="mt-4">
-                  <TicketQuantity />
+                  <TicketQuantity onChange={setTicketQuantity} />
                 </div>
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">

@@ -93,25 +93,33 @@ CREATE TABLE Workshop (
 );
 
 CREATE TABLE Ticket (
-    ticket_id VARCHAR(20),
+    ticket_id VARCHAR(50),
     user_id VARCHAR(50),
-    event_id VARCHAR(20),
+    event_id VARCHAR(50),
     expiration_date DATETIME,
-    seat_num VARCHAR(10),
+    seat_num INT,
     price DECIMAL(10,2),
     PRIMARY KEY (ticket_id),
+    KEY (seat_num),
     FOREIGN KEY (user_id) REFERENCES User(user_ID) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (event_id) REFERENCES Event(event_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE Payment_Method (
-	method_id VARCHAR(20),
-    user_id VARCHAR(20),
-    street VARCHAR (255), -- BILLING ADDRESS
+    method_id VARCHAR(50),
+    user_id VARCHAR(50),
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    street VARCHAR(255), -- BILLING ADDRESS
     city VARCHAR(255),
     state CHAR(2),
     zipcode INT,
-    card_number INT,
+    card_number VARCHAR(60),
+    card_salt VARCHAR(60), 
+    last_four CHAR(4),
+    card_type VARCHAR(10),
+    expiry_date CHAR(5), -- MM/YY format
+    cvv VARCHAR(4),
     PRIMARY KEY (method_id),
     FOREIGN KEY (user_id) REFERENCES User(user_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
