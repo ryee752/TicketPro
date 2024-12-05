@@ -11,6 +11,7 @@ export async function GET(request: NextRequest) {
     const category = url.searchParams.get("category") || "";
     const minPrice = parseFloat(url.searchParams.get("minPrice") || "0");
     const maxPrice = parseFloat(url.searchParams.get("maxPrice") || "9999999");
+    //const index = put the index thing here 
 
     // SQL query to fetch events with filtering
     const sql = `

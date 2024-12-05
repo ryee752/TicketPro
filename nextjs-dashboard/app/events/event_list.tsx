@@ -42,12 +42,14 @@ export default function EventList() {
     setLoading(true);
 
     try {
-      const params = new URLSearchParams({
+      const params = new URLSearchParams({ //passes parameters to api/events/route.tsx
         search: searchQuery || "",
         location: filters.location || "",
         category: filters.category || "",
         minPrice: filters.minPrice || "0",
         maxPrice: filters.maxPrice || "9999999",
+        //may need to pass the index here as 
+        //index: [data here]
       });
 
       const response = await fetch(`/api/events?${params.toString()}`);
