@@ -1,6 +1,7 @@
-import TicketProLogo from "../../ui/ticketpro-logo";
+'use client';
 
-import React from 'react';
+import { useState, useEffect } from 'react';
+import TicketProLogo from "../../ui/ticketpro-logo";
 import { 
   UserIcon, 
   MapPinIcon, 
@@ -9,6 +10,15 @@ import {
   EnvelopeIcon,
   TicketIcon 
 } from '@heroicons/react/24/outline';
+
+// Interface for user details
+interface User {
+  user_ID: string;
+  name: string;
+  phone: string;
+  email: string;
+  profile_image: string;
+}
 
 // Types for our events
 interface Event {
@@ -21,13 +31,46 @@ interface Event {
 }
 
 export default function Page() {
-  // Sample user data
-  const user = {
-    name: "Sarah Johnson",
-    phoneNumber: "(555) 123-4567",
-    email: "sarah.j@example.com",
-    profileImage: "https://tinyurl.com/yjmr9aua"
-  };
+  // State to store fetched data
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch events when component mounts
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        // Replace with the actual user ID (you might get this from authentication)
+        const userId = '102a3ef7-359b-4f42-94d6-4ec5e1936b16'; // This should come from your auth system
+        
+        const response = await fetch(`/api/profile/customer?userId=${userId}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch user information');
+        }
+
+        const data = await response.json();
+        
+        setUser(data.user);
+        setIsLoading(false);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        setIsLoading(false);
+      }
+    };
+
+    fetchUserInfo();
+  }, []);
+
+  // Loading state
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  // Error state
+  if (error) {
+    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+  }
 
   // Sample events data
   const registeredEvents: Event[] = [
@@ -147,8 +190,11 @@ export default function Page() {
     );
   };
 
+
+  // Render page with user info
   return (
     <main className="flex min-h-screen flex-col p-6">
+      {/* Logo section */}
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-45">
         <div className="flex items-center text-white">
           <TicketProLogo/>
@@ -156,29 +202,31 @@ export default function Page() {
       </div>
       
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-12">
-        {/* Left Column - Profile */}
-        <div className="md:col-span-4 space-y-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex flex-col items-center">
-              <img
-                src={user.profileImage}
-                alt="Profile"
-                className="w-32 h-32 rounded-full mb-4 object-cover"
-              />
-              <h2 className="text-2xl font-semibold mb-4">{user.name}</h2>
-              <div className="w-full space-y-3">
-                <div className="flex items-center gap-3">
-                  <UserIcon className="text-gray-400 w-5 h-5" />
-                  <span>{user.phoneNumber}</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <EnvelopeIcon className="text-gray-400 w-5 h-5" />
-                  <span>{user.email}</span>
+        {/* Profile Column */}
+        {user && (
+          <div className="md:col-span-4 space-y-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <div className="flex flex-col items-center">
+                <img
+                  src={user.profile_image}
+                  alt="Profile"
+                  className="w-32 h-32 rounded-full mb-4 object-cover"
+                />
+                <h2 className="text-2xl font-semibold mb-4">{user.name}</h2>
+                <div className="w-full space-y-3">
+                  <div className="flex items-center gap-3">
+                    <UserIcon className="text-gray-400 w-5 h-5" />
+                    <span>{user.phone}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <EnvelopeIcon className="text-gray-400 w-5 h-5" />
+                    <span>{user.email}</span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Right Column - Events */}
         <div className="md:col-span-8 space-y-6">
