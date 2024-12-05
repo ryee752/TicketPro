@@ -3,8 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../ui/button";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
 
 export default function CreateEventForm() {
+  const login = useSelector((state: RootState) => state.currentLogin.value);
   const [title, setTitle] = useState("");
   const [timeData, setTimeData] = useState({
     start_time: "",
@@ -25,6 +28,16 @@ export default function CreateEventForm() {
   const [description, setDescription] = useState(""); // New state for description
   const [image, setImage] = useState<File | null>(null); // New state for image
 
+  // Specialized inputs
+  const [specializedData, setSpecializedData] = useState({
+    genre: "",
+    event_link: "",
+    access_code: "",
+    speaker_name: "",
+    instructor_name: "",
+    topic: "",
+  });
+
   const router = useRouter();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +50,7 @@ export default function CreateEventForm() {
     e.preventDefault();
 
     const formData = new FormData();
+    formData.append("org_id", login.id);
     formData.append("title", title);
     formData.append("start_time", timeData.start_time);
     formData.append("end_time", timeData.end_time);
@@ -52,6 +66,19 @@ export default function CreateEventForm() {
 
     if (image) {
       formData.append("image", image); // Attach the image file
+    }
+
+    // Add specialized inputs to form data
+    if (eventType === "Concert") {
+      formData.append("genre", specializedData.genre);
+    } else if (eventType === "Webinar") {
+      formData.append("event_link", specializedData.event_link);
+      formData.append("access_code", specializedData.access_code);
+    } else if (eventType === "Conference") {
+      formData.append("speaker_name", specializedData.speaker_name);
+    } else if (eventType === "Workshop") {
+      formData.append("instructor_name", specializedData.instructor_name);
+      formData.append("topic", specializedData.topic);
     }
 
     const response = await fetch("/api/events/create_event", {
@@ -212,30 +239,125 @@ export default function CreateEventForm() {
 
           {/* Dropdown for Event Type */}
           <div className="mt-4">
-            <label
-              htmlFor="eventType"
-              className="mb-3 block text-xs font-medium text-gray-900"
-            >
+            <label className="block text-xs font-medium text-gray-900">
               EVENT TYPE
             </label>
             <select
-              className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm"
-              id="eventType"
-              name="eventType"
+              className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
               value={eventType}
-              required
               onChange={(e) => setEventType(e.target.value)}
             >
-              <option value="" disabled>
-                Select Event Type
-              </option>
+              <option value="">Select Event Type</option>
               <option value="Concert">Concert</option>
               <option value="Webinar">Webinar</option>
               <option value="Conference">Conference</option>
               <option value="Workshop">Workshop</option>
-              <option value="Community Gathering">Community Gathering</option>
             </select>
           </div>
+
+          {/* Specialized Inputs */}
+          {eventType === "Concert" && (
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-gray-900">
+                GENRE
+              </label>
+              <input
+                className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                value={specializedData.genre}
+                onChange={(e) =>
+                  setSpecializedData({
+                    ...specializedData,
+                    genre: e.target.value,
+                  })
+                }
+              />
+            </div>
+          )}
+          {eventType === "Webinar" && (
+            <>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-900">
+                  EVENT LINK
+                </label>
+                <input
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                  value={specializedData.event_link}
+                  onChange={(e) =>
+                    setSpecializedData({
+                      ...specializedData,
+                      event_link: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-900">
+                  ACCESS CODE
+                </label>
+                <input
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                  value={specializedData.access_code}
+                  onChange={(e) =>
+                    setSpecializedData({
+                      ...specializedData,
+                      access_code: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </>
+          )}
+          {eventType === "Conference" && (
+            <div className="mt-4">
+              <label className="block text-xs font-medium text-gray-900">
+                SPEAKER NAME
+              </label>
+              <input
+                className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                value={specializedData.speaker_name}
+                onChange={(e) =>
+                  setSpecializedData({
+                    ...specializedData,
+                    speaker_name: e.target.value,
+                  })
+                }
+              />
+            </div>
+          )}
+          {eventType === "Workshop" && (
+            <>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-900">
+                  INSTRUCTOR NAME
+                </label>
+                <input
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                  value={specializedData.instructor_name}
+                  onChange={(e) =>
+                    setSpecializedData({
+                      ...specializedData,
+                      instructor_name: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="mt-4">
+                <label className="block text-xs font-medium text-gray-900">
+                  TOPIC
+                </label>
+                <input
+                  className="block w-full rounded-md border border-gray-200 py-2 px-3 text-sm"
+                  value={specializedData.topic}
+                  onChange={(e) =>
+                    setSpecializedData({
+                      ...specializedData,
+                      topic: e.target.value,
+                    })
+                  }
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
       <Button type="submit" className="mt-4 w-full">

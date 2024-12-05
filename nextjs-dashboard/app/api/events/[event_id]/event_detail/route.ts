@@ -20,6 +20,12 @@ type Event = {
   image: string; // Assume the BLOB column for the image
   description: string;
   org_name: string;
+  genre?: string; // For Concerts
+  event_link?: string; // For Webinars
+  access_code?: string; // For Webinars
+  speaker_name?: string; // For Conferences
+  instructor_name?: string; // For Workshops
+  topic?: string; // For Workshops
 };
 
 export async function GET(
@@ -54,9 +60,19 @@ export async function GET(
     \`e\`.\`type\`, -- Escaped with backticks
     e.description, 
     e.availability, 
-    o.name AS org_name
+    o.name AS org_name,
+    c.genre, -- From Concert table
+    w.event_link, 
+    w.access_code, -- From Webinar table
+    conf.speaker_name, -- From Conference table
+    ws.instructor_name, 
+    ws.topic -- From Workshop table
   FROM Event e
   JOIN Organization o ON e.org_id = o.org_id
+  LEFT JOIN Concert c ON e.event_id = c.event_id
+  LEFT JOIN Webinar w ON e.event_id = w.event_id
+  LEFT JOIN Conference conf ON e.event_id = conf.event_id
+  LEFT JOIN Workshop ws ON e.event_id = ws.event_id
   WHERE e.event_id = ?;
 `;
     const values = [event_id];
