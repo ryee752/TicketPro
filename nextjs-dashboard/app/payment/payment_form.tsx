@@ -17,7 +17,17 @@ interface SavedCard {
   zipCode: string;
 }
 
+<<<<<<< Updated upstream
 export default function PaymentForm({ eventId }: { eventId: string }) {
+=======
+interface PaymentFormProps {
+  eventId: string;
+  userId: string;
+  price: number;
+}
+
+export default function PaymentForm({ eventId, userId, price }: PaymentFormProps) {
+>>>>>>> Stashed changes
   const router = useRouter();
   const [savedCards, setSavedCards] = useState<SavedCard[]>([
     {
@@ -71,10 +81,18 @@ export default function PaymentForm({ eventId }: { eventId: string }) {
     setSavedCards(savedCards.filter(card => card.id !== cardId));
   };
 
+<<<<<<< Updated upstream
+=======
+  const isValidCardNumber = (number: string) => {
+    return /^\d+$/.test(number); // Only check if the input contains digits
+  };
+
+>>>>>>> Stashed changes
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsProcessing(true);
+<<<<<<< Updated upstream
     
     try {
       // Simulate payment processing
@@ -82,6 +100,43 @@ export default function PaymentForm({ eventId }: { eventId: string }) {
       
       setIsSuccess(true);
       // Wait for 1.5 seconds to show success message
+=======
+
+    try {
+      if (!formData.cardNumber) {
+        throw new Error('Card number is required');
+      }
+
+      // Get last 4 digits of card number
+      const lastFour = formData.cardNumber.slice(-4);
+
+      const response = await fetch('/api/tickets', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          eventId,
+          price,
+          paymentDetails: {
+            street: formData.street,
+            city: formData.city,
+            state: formData.state,
+            zipCode: formData.zipCode,
+            cardNumber: formData.cardNumber,
+            lastFour: lastFour,
+            cardType: formData.cardType
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Payment failed');
+      }
+
+      setIsSuccess(true);
+>>>>>>> Stashed changes
       setTimeout(() => {
         router.push(`/events/${eventId}/event_detail`);
       }, 1500);
@@ -214,7 +269,12 @@ export default function PaymentForm({ eventId }: { eventId: string }) {
               className="block w-full rounded-md border border-gray-200 py-2 px-3"
               id="cardNumber"
               type="text"
+<<<<<<< Updated upstream
               pattern="\d+"
+=======
+              pattern="\d*"
+              maxLength={16}
+>>>>>>> Stashed changes
               value={formData.cardNumber}
               onChange={handleCardNumberChange}
               required
