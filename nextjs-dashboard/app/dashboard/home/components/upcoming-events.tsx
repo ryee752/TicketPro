@@ -87,7 +87,7 @@ export default function EventList() {
           return (
             <Link
               key={event.event_id}
-              href={`/events/${event.event_id}/event_detail`}
+              href={`/dashboard/events/${event.event_id}/event_detail`}
             >
               <div
                 key={event.event_id}

@@ -27,7 +27,7 @@ type Organization = {
   event_count: number;
 };
 
-export default function EventList() {
+export default function OrgList() {
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -64,7 +64,7 @@ export default function EventList() {
           {return (
             <Link
               key={organization.org_id}
-              href={`/dashboard`}
+              href={`/dashboard/home`}
             >
               <div
                 key={organization.org_id}
