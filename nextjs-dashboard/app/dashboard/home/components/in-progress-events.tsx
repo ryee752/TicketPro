@@ -1,10 +1,5 @@
-/* This component displays upcoming events for attendees (regular users) & organizations. 
-    If the current logged in user is an attendee:
-     - the attendee's next 5 upcoming events in their event-list will be displayed. 
-     - Events before the current date/time will not be displayed
-
-    If the current logged in user is an organization:
-     - the organization's next 5 upcoming events the org is hosting will be displayed
+/* This component displays in progress events for organizations. 
+    The top 5 upcoming events are displayed
 */
 
 "use client";
@@ -47,7 +42,7 @@ export default function EventList() {
           org_id: login.id //this is the ID of either the organization or the user currently signed in which is passed to route.ts
       });
       
-      const response = await fetch(`/api/home/organization/in-progress-events?${params.toString()}`);
+      const response = await fetch(`/api/home/organization/in-progress-events?${params.toString()}`); //fetch events from this route
     
       if (!response.ok) throw new Error("Failed to fetch events"); //Could not fetch events from database
 
@@ -75,7 +70,7 @@ export default function EventList() {
           if (event.image) {
             image = Buffer.from(event.image).toString("base64");
           }
-          return (
+          return ( //When users click on event card, send user to event-details page
             <Link
               key={event.event_id}
               href={`/dashboard/events/${event.event_id}/event_detail`}
@@ -124,8 +119,9 @@ export default function EventList() {
         })}
       </div>
 
-      {loading && <p className="text-center mt-4">Loading more events...</p>}
+      {loading && <p className="text-center mt-4">Loading more events...</p>} 
       {!hasMore && events.length === 0 && (
+        // No events found when querying database
         <p className="text-center mt-4">No events found.</p>
       )}
     </main>

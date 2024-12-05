@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const user_id = url.searchParams.get("current_id") || ""; //user_id
     
-    // SQL query to fetch events
+    // SQL query to fetch the first 5 events that the user is subscribed to with the closest start-times
     const sql = `
       SELECT
         E.event_id, 

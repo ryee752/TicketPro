@@ -1,10 +1,6 @@
-/* This component displays upcoming events for attendees (regular users) & organizations. 
-    If the current logged in user is an attendee:
-     - the attendee's next 5 upcoming events in their event-list will be displayed. 
-     - Events before the current date/time will not be displayed
-
-    If the current logged in user is an organization:
-     - the organization's next 5 upcoming events the org is hosting will be displayed
+/* This component displays the top 5 trending events to users
+    Search criteria for top 5 is based on how many users are attending the event. 
+    This can be further optimized to fit user preferences in the future
 */
 
 "use client";
@@ -77,7 +73,7 @@ export default function EventList() {
           if (event.image) {
             image = Buffer.from(event.image).toString("base64");
           }
-          return (
+          return ( //When users click on event card, send user to event-details page
             <Link
               key={event.event_id}
               href={`/dashboard/events/${event.event_id}/event_detail`}

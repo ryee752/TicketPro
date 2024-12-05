@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url);
     const org_id = url.searchParams.get("org_id") || ""; //org_id
     
-    // SQL query to fetch events
+    // SQL query to fetch the first 5 events that are in progress at the current time hosted by the specified organization 
     const sql = `
       SELECT
         event_id, 

@@ -1,10 +1,5 @@
-/* This component displays upcoming events for attendees (regular users) & organizations. 
-    If the current logged in user is an attendee:
-     - the attendee's next 5 upcoming events in their event-list will be displayed. 
-     - Events before the current date/time will not be displayed
-
-    If the current logged in user is an organization:
-     - the organization's next 5 upcoming events the org is hosting will be displayed
+/* This component displays the top 5 popular organizations to users
+    This query is based on how many events the organization is hosting.
 */
 
 "use client";

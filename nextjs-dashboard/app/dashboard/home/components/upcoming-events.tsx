@@ -54,7 +54,7 @@ export default function EventList() {
       else if(login.type === "user") { //If current user is a regular user, pass parameters to api/home/user/upcoming-events/route.ts
         response = await fetch(`/api/home/user/upcoming-events?${params.toString()}`);
       }
-      else { //Otherwise, the current user is of unknown type
+      else { //Otherwise, the current user is of unknown type. Throw an error
         throw new Error("Unknown user type for login: Failed to fetch events");
       }
     

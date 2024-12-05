@@ -1,8 +1,9 @@
+/* This is the component used to display items that only organizations should be able to see. Regular users cannot see items displayed in this page */
+
 "use client";
 
 import InProgressEvents from "../components/in-progress-events";
 import UpcomingList from "../components/upcoming-events";
-import PopularOrganizations from "../components/popular-organizations";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../lib/store";
 
