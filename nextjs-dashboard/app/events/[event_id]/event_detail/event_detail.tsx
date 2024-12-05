@@ -4,9 +4,12 @@ import Link from "next/link";
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 import TicketQuantity from "./component/ticketQuantity";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/lib/store";
 
 type Event = {
   event_id: string;
+  org_id: string;
   title: string;
   start_time: string;
   end_time: string;
@@ -29,6 +32,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const login = useSelector((state: RootState) => state.currentLogin.value);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -64,12 +68,14 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="relative flex items-center justify-between text-white mb-10">
-        <Link
-          href={`/events/${eventId}/edit_event`}
-          className="absolute right-0 bg-blue-500 text-white-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
-        >
-          Edit Event
-        </Link>
+        {login.type === "organization" && event.org_id === login.id ? (
+          <Link
+            href={`/events/${eventId}/edit_event`}
+            className="absolute right-0 bg-blue-500 text-white-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
+          >
+            Edit Event
+          </Link>
+        ) : null}
       </div>
       {/* Hero Section */}
       <div className="relative bg-white shadow-md">
@@ -128,7 +134,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
           </div>
 
           {/* Right Column: Pricing and Actions */}
-          <div className="p-6 bg-white shadow-lg rounded-lg max-h-64">
+          <div className="p-3 bg-white shadow-lg rounded-lg max-h-64">
             <h2 className="text-2xl font-bold mb-4">
               ${event.price}
               <span className="text-sm font-medium text-gray-500">
@@ -137,6 +143,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
               </span>
             </h2>
 
+<<<<<<< HEAD
             <button 
               className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600"
               onClick={handleBuyTickets}
@@ -147,23 +154,40 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
             <div className="mt-4 max-2-sm">
               <TicketQuantity />
             </div>
+=======
+            {login.type === "user" ? (
+              <div>
+                <button className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600">
+                  Buy Tickets
+                </button>
+>>>>>>> 6d12c59c9eebafd06c9577733c82d9c279bd4ba4
 
-            <div className="mt-4">
-              <p className="text-sm text-gray-600">
-                <strong>Capacity:</strong> {event.capacity} attendees
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Waitlist Capacity:</strong> {event.waitlist_capacity}
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Availability:</strong>{" "}
-                {event.availability === "available" ? (
-                  <span className="text-green-500 font-medium">Available</span>
-                ) : (
-                  <span className="text-red-500 font-medium">Unavailable</span>
-                )}
-              </p>
-            </div>
+                <div className="mt-4">
+                  <TicketQuantity />
+                </div>
+                <div className="mt-4">
+                  <p className="text-sm text-gray-600">
+                    <strong>Capacity:</strong> {event.capacity} attendees
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Waitlist Capacity:</strong>{" "}
+                    {event.waitlist_capacity}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Availability:</strong>{" "}
+                    {event.availability === "available" ? (
+                      <span className="text-green-500 font-medium">
+                        Available
+                      </span>
+                    ) : (
+                      <span className="text-red-500 font-medium">
+                        Unavailable
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>

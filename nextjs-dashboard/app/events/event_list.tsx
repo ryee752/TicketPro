@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../lib/store";
 
 type Event = {
   event_id: string;
@@ -34,6 +36,7 @@ export default function EventList() {
     maxPrice: "",
   });
   const [loading, setLoading] = useState(false);
+  const login = useSelector((state: RootState) => state.currentLogin.value);
 
   const fetchEvents = async () => {
     setLoading(true);
@@ -91,12 +94,14 @@ export default function EventList() {
       {/* Header with "Create Event" Button */}
       <div className="relative flex items-center justify-between bg-blue-500 p-4 text-white">
         <h1 className="text-xl font-bold">Event List</h1>
-        <Link
-          href="/events/create_event"
-          className="absolute right-4 bg-white text-blue-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
-        >
-          Create Event
-        </Link>
+        {login.type === "organization" ? (
+          <Link
+            href="/events/create_event"
+            className="absolute right-4 bg-white text-blue-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
+          >
+            Create Event
+          </Link>
+        ) : null}
       </div>
 
       {/* Search and Filter Section */}
