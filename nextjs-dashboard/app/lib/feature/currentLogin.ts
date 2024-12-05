@@ -7,7 +7,7 @@ export interface CurrentLogin {
 }
 
 const initialState: CurrentLogin = {
-  value: {},
+  value: -1,
 };
 
 export const currentLogin = createSlice({

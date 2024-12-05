@@ -9,10 +9,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "../../ui/button";
-import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { storeLoginInfo } from "@/app/lib/feature/currentLogin";
 
 export default function SignUpForm() {
@@ -24,6 +23,15 @@ export default function SignUpForm() {
   const [formError, setFormError] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const currentLogin = useSelector((state: any) => state.currentLogin.value);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (currentLogin !== -1) {
+      router.push("../../events");
+    }
+  }, [currentLogin, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -44,6 +52,7 @@ export default function SignUpForm() {
     });
 
     if (response.ok) {
+      console.log("User Registered");
       // The request was successful
       const result = await response.json(); // If the server returns JSON data
       dispatch(
@@ -55,9 +64,27 @@ export default function SignUpForm() {
       router.push("../../events");
     } else {
       // The request failed
-      console.error("Registration failed");
+      const err = await response.json(); 
+      alert(err.error)
+      console.log("Registration failed");
     }
   };
+
+  // const checkExisting = async () => {
+  //   const response = await fetch(`../../api/signup/customer?${encodeURIComponent(email)}`, {
+  //     method: 'GET',
+  //     headers: { 'Content-Type': 'application/json' },
+  //   });
+
+  //   if (response.ok) {
+  //     // The request was successful
+  //     const result = await response.json(); // If the server returns JSON data
+  //     console.log(result); // Process the result
+  //   } else {
+  //     // The request failed
+  //     console.error('Email Taken');
+  //   }
+  // }
 
   return (
     <form className="space-y-3" onSubmit={handleSubmit}>
@@ -80,6 +107,7 @@ export default function SignUpForm() {
                 type="first_name"
                 name="first_name"
                 placeholder="Enter your First Name"
+                maxLength={50}
                 required
                 value={first}
                 onChange={(e) => setFirst(e.target.value)}
@@ -101,6 +129,7 @@ export default function SignUpForm() {
                 type="last_name"
                 name="last_name"
                 placeholder="Enter your Last Name"
+                maxLength={50}
                 required
                 value={last}
                 onChange={(e) => setLast(e.target.value)}
@@ -122,6 +151,7 @@ export default function SignUpForm() {
                 type="email"
                 name="email"
                 placeholder="Enter your email address"
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -164,9 +194,9 @@ export default function SignUpForm() {
                 id="phone"
                 type="phone"
                 name="phone"
-                placeholder="Enter your phone number"
+                placeholder="Enter your phone number, eg.123-456-7890"
+                pattern="^\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{4}$"
                 required
-                minLength={6}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
@@ -183,8 +213,7 @@ export default function SignUpForm() {
 
           <div>
             <Button type="submit" className="mt-4 w-full">
-              Sign Up{" "}
-              <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+              Sign Up <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
             </Button>
           </div>
         </div>
