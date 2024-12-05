@@ -4,46 +4,36 @@ import { RowDataPacket } from "mysql2";
 
 export async function GET(request: NextRequest) {
   try {
-    // Parse query parameters
-    const url = new URL(request.url);
-    const user_id = url.searchParams.get("user_id") || ""; //org_id
     
-    // SQL query to fetch events
+    // SQL query to fetch the top 5 organizations with the most events. This query can be optimized to better find popular organizations
     const sql = `
-      SELECT
-        event_id, 
-        org_id,
-        title,
-        start_time, 
-        end_time, 
-        date, 
-        capacity, 
-        waitlist_capacity, 
-        price, 
-        availability, 
-        street, 
-        city, 
-        state, 
-        zipcode, 
-        type, 
-        image, 
-        description
-      FROM Event
-      WHERE user_id = ? 
-        AND start_time > NOW() -- Only include upcoming events
-      ORDER BY start_time ASC
+      SELECT 
+          o.org_ID,
+          o.name,
+          o.email,
+          o.phone,
+          o.website,
+          o.street,
+          o.city,
+          o.state,
+          o.zipcode,
+          COUNT(e.event_id) AS event_count
+      FROM 
+          Organization o
+      LEFT JOIN 
+          Event e ON o.org_ID = e.org_id
+      GROUP BY 
+          o.org_ID, o.name
+      ORDER BY 
+          event_count DESC
       LIMIT 5;
     `;
-    // Query parameters
-    const values = [
-      user_id
-    ];
 
     // Query Execution
-    const events = await new Promise<RowDataPacket[]>((resolve, reject) => {
-      connection.query(sql, values, (err, results) => {
+    const organizations = await new Promise<RowDataPacket[]>((resolve, reject) => {
+      connection.query(sql, (err, results) => {
         if (err) {
-          console.error("Error fetching filtered events:", err);
+          console.error("Error fetching filtered organizations:", err);
           return reject("Internal server error");
         }
 
@@ -53,19 +43,19 @@ export async function GET(request: NextRequest) {
   
 
     // Convert BLOB to base64
-    const formedResult = events.map((event: any) => ({
-      ...event,
+    const formedResult = organizations.map((organization: any) => ({
+      ...organization,
       // image: event.image ? Buffer.from(event.image).toString("base64") : null,
     }));
 
     return NextResponse.json(
-      { events: formedResult, message: "Events fetched successfully!" },
+      { organizations: formedResult, message: "Organizations fetched successfully!" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error fetching events:", error);
+    console.error("Error fetching organizations:", error);
     return NextResponse.json(
-      { message: "Failed to fetch events." },
+      { message: "Failed to fetch organizations." },
       { status: 500 }
     );
   }

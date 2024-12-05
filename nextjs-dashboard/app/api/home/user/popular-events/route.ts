@@ -4,44 +4,43 @@ import { RowDataPacket } from "mysql2";
 
 export async function GET(request: NextRequest) {
   try {
-    // Parse query parameters
-    const url = new URL(request.url);
-    const user_id = url.searchParams.get("user_id") || ""; //user_id
-    
-    // SQL query to fetch events
+
+    // This SQL query fetches the top 5 events with the most attendees
+    // Note: Until Tickets table is completed, this query is untested
     const sql = `
-      SELECT
-        event_id, 
-        org_id,
-        title,
-        start_time, 
-        end_time, 
-        date, 
-        capacity, 
-        waitlist_capacity, 
-        price, 
-        availability, 
-        street, 
-        city, 
-        state, 
-        zipcode, 
-        type, 
-        image, 
-        description
-      FROM Event
-      WHERE org_id = "4d833eb3-16cd-4af9-8021-6a3d200f7cd3" 
-        AND start_time > NOW() -- Only include upcoming events
-      ORDER BY start_time ASC
+      SELECT 
+          E.event_id, 
+          E.org_id,
+          E.title,
+          E.start_time, 
+          E.end_time, 
+          E.date, 
+          E.capacity, 
+          E.waitlist_capacity, 
+          E.price, 
+          E.availability, 
+          E.street, 
+          E.city, 
+          E.state, 
+          E.zipcode, 
+          E.type, 
+          E.image, 
+          E.description
+          COUNT(T.ticket_id) AS tickets_sold,
+          (E.capacity - COUNT(T.ticket_id)) AS spots_left
+      FROM 
+          Event E
+      LEFT JOIN 
+          Ticket T ON E.event_id = T.event_id
+      GROUP BY 
+          E.event_id, E.title, E.capacity
+      ORDER BY 
+          tickets_sold DESC
       LIMIT 5;
     `;
-    // Query parameters
-    const values = [
-      user_id
-    ];
 
-    // Query Execution
     const events = await new Promise<RowDataPacket[]>((resolve, reject) => {
-      connection.query(sql, values, (err, results) => {
+      connection.query(sql, (err, results) => {
         if (err) {
           console.error("Error fetching filtered events:", err);
           return reject("Internal server error");
