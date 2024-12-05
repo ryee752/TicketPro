@@ -2,12 +2,21 @@
 
 import { useState } from "react";
 
-export default function TicketQuantity() {
+export default function TicketQuantity({ onChange }: { onChange: (quantity: number) => void }) {
   const [quantity, setQuantity] = useState(1);
 
-  const handleIncrease = () => setQuantity(quantity + 1);
+  const handleIncrease = () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    onChange(newQuantity); // Make sure this is called
+  };
+  
   const handleDecrease = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
+      onChange(newQuantity); // Make sure this is called
+    }
   };
 
   return (
