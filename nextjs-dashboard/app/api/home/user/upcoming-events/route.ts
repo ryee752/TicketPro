@@ -6,37 +6,39 @@ export async function GET(request: NextRequest) {
   try {
     // Parse query parameters
     const url = new URL(request.url);
-    const org_id = url.searchParams.get("current_id") || ""; //org_id
+    const user_id = url.searchParams.get("current_id") || ""; //user_id
     
     // SQL query to fetch events
     const sql = `
       SELECT
-        event_id, 
-        org_id,
-        title,
-        start_time, 
-        end_time, 
-        date, 
-        capacity, 
-        waitlist_capacity, 
-        price, 
-        availability, 
-        street, 
-        city, 
-        state, 
-        zipcode, 
-        type, 
-        image, 
-        description
-      FROM Event
-      WHERE org_id = ? 
-        AND start_time > NOW() -- Only include upcoming events
-      ORDER BY start_time ASC
+        E.event_id, 
+        E.org_id,
+        E.title,
+        E.start_time, 
+        E.end_time, 
+        E.date, 
+        E.capacity, 
+        E.waitlist_capacity, 
+        E.price, 
+        E.availability, 
+        E.street, 
+        E.city, 
+        E.state, 
+        E.zipcode, 
+        E.type, 
+        E.image, 
+        E.description
+      FROM Event E
+      JOIN List_Of_Subscribed_Events LSE
+        ON E.event_id = LSE.event_id
+      WHERE LSE.user_id = ?
+        AND E.start_time > NOW() -- Filter for events with start time after current date/time
+      ORDER BY E.start_time ASC
       LIMIT 5;
     `;
     // Query parameters
     const values = [
-      org_id
+      user_id
     ];
 
     // Query Execution

@@ -12,7 +12,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../../lib/store";
+import { RootState } from "../../lib/store";
 
 type Event = {
   event_id: string;
@@ -43,13 +43,22 @@ export default function EventList() {
     setLoading(true);
 
     try {
-      const params = new URLSearchParams({ //passes parameters to api/home/organization/upcoming-events/route.tsx
-          org_id: login.id
+      const params = new URLSearchParams({ //parameters to be passed to route.ts
+          current_id: login.id //this is the ID of either the organization or the user currently signed in which is passed to route.ts
       });
-      const response = await fetch(`/api/home/organization/upcoming-events?${params.toString()}`);
+      
+      let response;
+      if(login.type === "organization") { //If the current user is an organization, pass parameters to api/home/organization/upcoming-events/route.ts
+        response = await fetch(`/api/home/organization/upcoming-events?${params.toString()}`);
+      }
+      else if(login.type === "user") { //If current user is a regular user, pass parameters to api/home/user/upcoming-events/route.ts
+        response = await fetch(`/api/home/user/upcoming-events?${params.toString()}`);
+      }
+      else { //Otherwise, the current user is of unknown type
+        throw new Error("Unknown user type for login: Failed to fetch events");
+      }
     
-    // const response = await fetch(`/api/home/organization/upcoming-events`);
-      if (!response.ok) throw new Error("Failed to fetch events");
+      if (!response.ok) throw new Error("Failed to fetch events"); //Could not fetch events from database
 
       const data = await response.json();
       const newEvents = Array.isArray(data) ? data : data.events || [];
@@ -89,7 +98,7 @@ export default function EventList() {
                   <img
                     src={`data:image/jpeg;base64,${image}`} // Convert BLOB to base64
                     alt={event.event_id}
-                    className="w-full h-48 object-cover"
+                    className="w-full h-28 object-cover"
                   />
                 )}
 

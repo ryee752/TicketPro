@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
   try {
     // Parse query parameters
     const url = new URL(request.url);
-    const org_id = url.searchParams.get("current_id") || ""; //org_id
+    const user_id = url.searchParams.get("user_id") || ""; //user_id
     
     // SQL query to fetch events
     const sql = `
@@ -29,14 +29,14 @@ export async function GET(request: NextRequest) {
         image, 
         description
       FROM Event
-      WHERE org_id = ? 
+      WHERE org_id = "4d833eb3-16cd-4af9-8021-6a3d200f7cd3" 
         AND start_time > NOW() -- Only include upcoming events
       ORDER BY start_time ASC
       LIMIT 5;
     `;
     // Query parameters
     const values = [
-      org_id
+      user_id
     ];
 
     // Query Execution

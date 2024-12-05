@@ -1,6 +1,8 @@
 import { lusitana } from '@/app/ui/fonts';
 import TicketProLogo from "../ui/ticketpro-logo";
-import UpcomingList from "./organization/components/upcoming-events";
+import PopularEvents from "./components/popular-events";
+import UpcomingList from "./components/upcoming-events";
+import PopularOrganizations from "./components/popular-organizations";
  
 export default async function Page() {
     // const latestInvoices = await fetchLatestInvoices();
@@ -17,6 +19,7 @@ export default async function Page() {
           Trending Events
         </h2>      
       </div>
+      <PopularEvents />
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {/* list popular events with upcoming releases */}
@@ -32,6 +35,7 @@ export default async function Page() {
           Popular Organizations
         </h2>
       </div>
+      <PopularOrganizations />
 
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         <h2 className="text-2xl font-semibold mb-4">Hello hello</h2>
