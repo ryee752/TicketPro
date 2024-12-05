@@ -1,5 +1,4 @@
 import "@/app/ui/global.css";
-import StoreProvider from "./provider";
 
 export default function RootLayout({
   children,
@@ -8,9 +7,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <StoreProvider>{children}</StoreProvider>
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
