@@ -149,19 +149,22 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
               <div>
                 <button
                   onClick={() => handleBuyTickets(eventId, ticketQuantity)}
-                  disabled={event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity}
+                  disabled={
+                    event.tickets_remaining <= 0 ||
+                    event.tickets_remaining < ticketQuantity
+                  }
                   className={`w-full py-3 rounded-lg shadow-md ${
-                    event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity
-                      ? 'bg-gray-400 cursor-not-allowed' // Disabled state
-                      : 'bg-blue-500 hover:bg-green-600' // Enabled state
+                    event.tickets_remaining <= 0 ||
+                    event.tickets_remaining < ticketQuantity
+                      ? "bg-gray-400 cursor-not-allowed" // Disabled state
+                      : "bg-blue-500 hover:bg-green-600" // Enabled state
                   } text-white`}
                 >
-                  {event.tickets_remaining <= 0 
-                    ? 'Sold Out' 
+                  {event.tickets_remaining <= 0
+                    ? "Sold Out"
                     : event.tickets_remaining < ticketQuantity
-                    ? 'Not Enough Tickets'
-                    : 'Buy Tickets'
-                  }
+                    ? "Not Enough Tickets"
+                    : "Buy Tickets"}
                 </button>
 
                 <div className="mt-4">
@@ -169,9 +172,9 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
                 </div>
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">
-                    {event.tickets_remaining > 0 
-                      ? `${event.tickets_remaining} tickets remaining` 
-                      : 'Sold Out'}
+                    {event.tickets_remaining > 0
+                      ? `${event.tickets_remaining} tickets remaining`
+                      : "Sold Out"}
                   </p>
                   {/* <p className="text-sm text-gray-600">
                     <strong>Waitlist Capacity:</strong>{" "}
