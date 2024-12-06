@@ -64,8 +64,8 @@ export default function SignUpForm() {
       router.push("../../events");
     } else {
       // The request failed
-      const err = await response.json(); 
-      alert(err.error)
+      const err = await response.json();
+      alert(err.error);
       console.log("Registration failed");
     }
   };
@@ -213,7 +213,8 @@ export default function SignUpForm() {
 
           <div>
             <Button type="submit" className="mt-4 w-full">
-              Sign Up <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+              Sign Up{" "}
+              <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
             </Button>
           </div>
         </div>
