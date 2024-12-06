@@ -62,14 +62,14 @@ DB_NAME=ticket_pro<br />
       }, []);
    ```
 ## Contributions
-Ryan Yee
+1. Ryan Yee
 - Implemented frontend login and sign-up features for Users and Organizations
 - Connected the frontend and backend to sign in and register Users and Organizations
 - Created a secure sign-up and login process by salting and storing hashed the password
 - Made sure that Users and Organizations can't sign up with already registered emails.
 - Setting up the project layout and environment
 - Refined Schema for Users and Organizations
-Nathan Duong: 
+2. Nathan Duong 
 - Implemented front end for payment form.
 - Implemented connecting frontend payments to the backend.
 - Helped implement the buying tickets button compared with queried data. 
@@ -77,7 +77,7 @@ Nathan Duong:
 - Tested edge cases and debugged payment and ticket-related transactions.
 - Frontend components related to payment and ticket tables properly updating tables through queries.
 - Refined and edited schema for payment methods and tickets. 
-Keigo Tajima
+3. Keigo Tajima
 - Implemented frontend and backend for the Homepage/dashboard
 - Implemented side tab that is used for page navigation
 - Came up with the design for the Schema
@@ -85,7 +85,7 @@ Keigo Tajima
 - Frontend framework design and decisions
 - Implemented popular events and registered events display homepage
 - Implemented upcoming and in-progress events display on the homepage
-Kisang Hwang
+4. Kisang Hwang
 - Changed Event table and type specialization
 - Front-end Event list page / read event list query
 - Implemented filters for the event list using dynamic querying
@@ -95,7 +95,7 @@ Kisang Hwang
 - Dealing with and setting up global variables for login sessions
 - Created seed data
 - Implemented putting image binary data to the Event table
-May Sabai
+5. May Sabai
 - Designed the frontend for Users and Organizations profile pages
 - Connected the backend to frontend for Users and Organizations profile pages
 - Collaborated on schema
