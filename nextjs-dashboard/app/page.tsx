@@ -11,6 +11,7 @@ import { reset } from "./lib/feature/currentLogin";
 export default function Page() {
   const router = useRouter();
   const dispatch = useDispatch();
+  
   const currentLogin = useSelector(
     (state: RootState) => state.currentLogin.value
   );
