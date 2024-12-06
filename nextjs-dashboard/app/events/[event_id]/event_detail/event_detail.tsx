@@ -70,14 +70,14 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="relative flex items-center justify-between text-white mb-10">
-        {login.type === "organization" && event.org_id === login.id ? (
-          <Link
-            href={`/events/${eventId}/edit_event`}
-            className="absolute right-0 bg-blue-500 text-white-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
-          >
-            Edit Event
-          </Link>
-        ) : null}
+        {/* {login.type === "organization" && event.org_id === login.id ? ( */}
+        <Link
+          href={`/events/${eventId}/edit_event`}
+          className="absolute right-0 bg-blue-500 text-white-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
+        >
+          Edit Event
+        </Link>
+        {/* ) : null} */}
       </div>
       {/* Hero Section */}
       <div className="relative bg-white shadow-md">
@@ -149,19 +149,22 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
               <div>
                 <button
                   onClick={() => handleBuyTickets(eventId, ticketQuantity)}
-                  disabled={event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity}
+                  disabled={
+                    event.tickets_remaining <= 0 ||
+                    event.tickets_remaining < ticketQuantity
+                  }
                   className={`w-full py-3 rounded-lg shadow-md ${
-                    event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity
-                      ? 'bg-gray-400 cursor-not-allowed' // Disabled state
-                      : 'bg-blue-500 hover:bg-green-600' // Enabled state
+                    event.tickets_remaining <= 0 ||
+                    event.tickets_remaining < ticketQuantity
+                      ? "bg-gray-400 cursor-not-allowed" // Disabled state
+                      : "bg-blue-500 hover:bg-green-600" // Enabled state
                   } text-white`}
                 >
-                  {event.tickets_remaining <= 0 
-                    ? 'Sold Out' 
+                  {event.tickets_remaining <= 0
+                    ? "Sold Out"
                     : event.tickets_remaining < ticketQuantity
-                    ? 'Not Enough Tickets'
-                    : 'Buy Tickets'
-                  }
+                    ? "Not Enough Tickets"
+                    : "Buy Tickets"}
                 </button>
 
                 <div className="mt-4">
@@ -169,9 +172,9 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
                 </div>
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">
-                    {event.tickets_remaining > 0 
-                      ? `${event.tickets_remaining} tickets remaining` 
-                      : 'Sold Out'}
+                    {event.tickets_remaining > 0
+                      ? `${event.tickets_remaining} tickets remaining`
+                      : "Sold Out"}
                   </p>
                   {/* <p className="text-sm text-gray-600">
                     <strong>Waitlist Capacity:</strong>{" "}
