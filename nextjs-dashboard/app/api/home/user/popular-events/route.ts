@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
           E.zipcode, 
           E.type, 
           E.image, 
-          E.description
+          E.description,
           COUNT(T.ticket_id) AS tickets_sold,
           (E.capacity - COUNT(T.ticket_id)) AS spots_left
       FROM 

@@ -20,6 +20,7 @@ type Event = {
   capacity: number;
   waitlist_capacity: number;
   price: number;
+  availability: string;
   street: string;
   city: string;
   state: string;
@@ -46,7 +47,7 @@ export default function EventList() {
       // });
       // const response = await fetch(`/api/home/user/popular-events?${params.toString()}`);
     
-      const response = await fetch(`/api/home/organization/popular-events`); //No need to pass parameters for this query
+      const response = await fetch(`/api/home/user/popular-events`); //No need to pass parameters for this query
       if (!response.ok) throw new Error("Failed to fetch events");
 
       const data = await response.json();
@@ -73,7 +74,7 @@ export default function EventList() {
           if (event.image) {
             image = Buffer.from(event.image).toString("base64");
           }
-          return ( //When users click on event card, send user to event-details page
+          return (
             <Link
               key={event.event_id}
               href={`/dashboard/events/${event.event_id}/event_detail`}
@@ -98,8 +99,11 @@ export default function EventList() {
                     {event.city}, {event.state}
                   </p>
                   <p className="text-sm text-gray-600 mt-1">
-                    {/* Display # of Tickets sold and how many spots left */}
-                    {/* Tickets Sold: {event.tickets_sold}, Spots Left: {event.spots_left}  */}
+                    {new Date(event.start_time).toLocaleDateString()}{" "}
+                    {new Date(event.start_time).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </p>
                   {event.type && (
                     <span
