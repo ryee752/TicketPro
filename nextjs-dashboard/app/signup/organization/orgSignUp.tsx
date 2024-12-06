@@ -74,7 +74,7 @@ export default function OrganizationSignUpForm() {
           type: "organization",
         })
       ); // Process the result
-      router.push("../../events");
+      router.push("../../dashboard/home");
     } else {
       // The request failed
       const err = await response.json(); 
