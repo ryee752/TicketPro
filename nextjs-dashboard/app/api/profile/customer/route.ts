@@ -30,8 +30,7 @@ export async function GET(request: NextRequest) {
               // Combine first and last name for the profile display
               const profileResult = {
                 ...user,
-                name: `${user.first_name} ${user.last_name}`,
-                profile_image: `https://ui-avatars.com/api/?name=${encodeURIComponent(user.first_name + '+' + user.last_name)}`
+                name: `${user.first_name} ${user.last_name}`
               };
 
               resolve(profileResult);
