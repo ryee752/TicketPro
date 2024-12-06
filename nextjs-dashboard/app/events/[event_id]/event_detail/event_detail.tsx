@@ -25,6 +25,7 @@ type Event = {
   description: string;
   availability: string;
   org_name: string;
+  tickets_remaining: number;
 };
 
 export default function EventDetailPage({ eventId }: { eventId: string }) {
@@ -148,9 +149,19 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
               <div>
                 <button 
                   onClick={() => handleBuyTickets(eventId, ticketQuantity)}
-                  className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600"
+                  disabled={event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity}
+                  className={`w-full py-3 rounded-lg shadow-md ${
+                    event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity
+                      ? 'bg-gray-400 cursor-not-allowed' // Disabled state
+                      : 'bg-blue-500 hover:bg-green-600' // Enabled state
+                  } text-white`}
                 >
-                  Buy Tickets
+                  {event.tickets_remaining <= 0 
+                    ? 'Sold Out' 
+                    : event.tickets_remaining < ticketQuantity
+                    ? 'Not Enough Tickets'
+                    : 'Buy Tickets'
+                  }
                 </button>
 
                 <div className="mt-4">
@@ -158,12 +169,14 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
                 </div>
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">
-                    <strong>Capacity:</strong> {event.capacity} attendees
+                    {event.tickets_remaining > 0 
+                      ? `${event.tickets_remaining} tickets remaining` 
+                      : 'Sold Out'}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  {/* <p className="text-sm text-gray-600">
                     <strong>Waitlist Capacity:</strong>{" "}
                     {event.waitlist_capacity}
-                  </p>
+                  </p> */}
                   <p className="text-sm text-gray-600">
                     <strong>Availability:</strong>{" "}
                     {event.availability === "available" ? (

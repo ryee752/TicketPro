@@ -57,24 +57,26 @@ export async function GET(
     e.state, 
     e.zipcode, 
     e.image AS image, 
-    \`e\`.\`type\`, -- Escaped with backticks
+    e.type, 
     e.description, 
     e.availability, 
     o.name AS org_name,
-    c.genre, -- From Concert table
+    c.genre,
     w.event_link, 
-    w.access_code, -- From Webinar table
-    conf.speaker_name, -- From Conference table
+    w.access_code,
+    conf.speaker_name,
     ws.instructor_name, 
-    ws.topic -- From Workshop table
+    ws.topic,
+    e.capacity - COUNT(DISTINCT t.ticket_id) as tickets_remaining
   FROM Event e
   JOIN Organization o ON e.org_id = o.org_id
   LEFT JOIN Concert c ON e.event_id = c.event_id
   LEFT JOIN Webinar w ON e.event_id = w.event_id
   LEFT JOIN Conference conf ON e.event_id = conf.event_id
   LEFT JOIN Workshop ws ON e.event_id = ws.event_id
-  WHERE e.event_id = ?;
-`;
+  LEFT JOIN Ticket t ON e.event_id = t.event_id
+  WHERE e.event_id = ?
+  GROUP BY e.event_id`;
     const values = [event_id];
 
     // Execute the query
