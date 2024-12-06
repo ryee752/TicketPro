@@ -1,5 +1,7 @@
 'use client';
 
+// Add import for ArrowLeftIcon
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { Button } from '@/app/ui/button';
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -130,6 +132,11 @@ export default function PaymentForm({ eventId, userId, price }: PaymentFormProps
     setFormData({ ...formData, cvv: value });
   };
 
+  // Add handleGoBack function
+  const handleGoBack = () => {
+    router.back();
+  };
+
   if (isSuccess) {
     return (
       <div className="text-center py-10">
@@ -252,7 +259,7 @@ export default function PaymentForm({ eventId, userId, price }: PaymentFormProps
         </div>
 
         {/* Billing Address */}
-        <div>
+        <div className="mb-8"> {/* Add margin-bottom here */}
           <div>
             <label htmlFor="street" className="mb-3 mt-5 block text-xs font-medium text-gray-900">
               Street Address
@@ -318,9 +325,21 @@ export default function PaymentForm({ eventId, userId, price }: PaymentFormProps
         </div>
       </div>
 
-      <Button type="submit" disabled={isProcessing}>
-        {isProcessing ? 'Processing...' : `Pay $${price * quantity}`}
-      </Button>
+      {/* Add back button before payment button */}
+      <div className="flex flex-col gap-4">
+        <Button 
+          type="button" 
+          className="w-full"
+          onClick={handleGoBack}
+        >
+          <ArrowLeftIcon className="h-5 w-5 mr-2" />
+          Go Back to Previous Page
+        </Button>
+
+        <Button type="submit" disabled={isProcessing}>
+          {isProcessing ? 'Processing...' : `Pay $${price * quantity}`}
+        </Button>
+      </div>
     </form>
   );
 }
