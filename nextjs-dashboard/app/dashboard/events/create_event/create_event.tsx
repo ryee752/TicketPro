@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "../../ui/button";
+import { Button } from "../../../ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/lib/store";
 
@@ -88,7 +88,7 @@ export default function CreateEventForm() {
 
     if (response.ok) {
       console.log("Event created successfully");
-      router.push("/events");
+      router.push("/dashboard/events");
     } else {
       console.error("Failed to create event");
     }

@@ -92,7 +92,7 @@ export default function PaymentForm({ eventId, userId, price }: PaymentFormProps
 
       setIsSuccess(true);
       setTimeout(() => {
-        router.push(`/events/${eventId}/event_detail`);
+        router.push(`/dashboard/events/${eventId}/event_detail`);
       }, 1500);
 
     } catch (error) {

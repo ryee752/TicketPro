@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../lib/store";
+import { RootState } from "../../lib/store";
 
 type Event = {
   event_id: string;
@@ -107,7 +107,7 @@ export default function EventList() {
         <h1 className="text-xl font-bold">Event List</h1>
         {login.type === "organization" ? (
           <Link
-            href="/events/create_event"
+            href="/dashboard/events/create_event"
             className="absolute right-4 bg-white text-blue-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
           >
             Create Event
@@ -238,7 +238,7 @@ export default function EventList() {
           return (
             <Link
               key={event.event_id}
-              href={`/events/${event.event_id}/event_detail`}
+              href={`/dashboard/events/${event.event_id}/event_detail`}
             >
               <div
                 key={event.event_id}

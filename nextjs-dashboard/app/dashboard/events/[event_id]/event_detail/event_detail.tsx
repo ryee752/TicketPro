@@ -71,7 +71,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
       <div className="relative flex items-center justify-between text-white mb-10">
         {login.type === "organization" && event.org_id === login.id ? (
           <Link
-            href={`/events/${eventId}/edit_event`}
+            href={`/dashboard/events/${eventId}/edit_event`}
             className="absolute right-0 bg-blue-500 text-white-500 px-4 py-2 rounded-lg font-medium shadow-md hover:bg-gray-200"
           >
             Edit Event

@@ -1,8 +1,8 @@
 import AcmeLogo from "@/app/ui/ticketpro-logo";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import EventList from "./event_list";
-import TicketProLogo from "../ui/ticketpro-logo";
+import CreateEventForm from "./create_event";
+import TicketProLogo from "../../../ui/ticketpro-logo";
 
 export default function Page() {
   return (
@@ -12,7 +12,7 @@ export default function Page() {
       </div>
       <div className="flex grow items-center justify-center bg-gray-100">
         <div className="w-full p-6">
-          <EventList />
+          <CreateEventForm />
         </div>
       </div>
     </main>
