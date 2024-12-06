@@ -1,12 +1,25 @@
 "use client";
 
+import React from "react";
 import { Provider } from "react-redux";
-import { store } from "./lib/store";
+import { PersistGate } from "redux-persist/integration/react";
+import { store, persistor } from "./lib/store";
 
-export default function StoreProvider({
+export default function AppProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <Provider store={store}>{children}</Provider>;
+  return (
+    <Provider store={store}>
+      {/* Only render PersistGate if persistor exists */}
+      {persistor ? (
+        <PersistGate loading={null} persistor={persistor}>
+          {children}
+        </PersistGate>
+      ) : (
+        children
+      )}
+    </Provider>
+  );
 }

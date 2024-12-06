@@ -1,4 +1,4 @@
-`use client`;
+"use client";
 
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -7,7 +7,7 @@ export interface CurrentLogin {
 }
 
 const initialState: CurrentLogin = {
-  value: {},
+  value: -1,
 };
 
 export const currentLogin = createSlice({
@@ -17,8 +17,9 @@ export const currentLogin = createSlice({
     storeLoginInfo: (state, action) => {
       state.value = action.payload;
     },
+    reset: () => initialState, // Reset state to initial value
   },
 });
 
-export const { storeLoginInfo } = currentLogin.actions;
+export const { storeLoginInfo, reset } = currentLogin.actions;
 export default currentLogin.reducer;

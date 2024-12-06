@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import TicketQuantity from "./component/ticketQuantity";
 import { useSelector } from "react-redux";
@@ -24,13 +25,16 @@ type Event = {
   description: string;
   availability: string;
   org_name: string;
+  tickets_remaining: number;
 };
 
 export default function EventDetailPage({ eventId }: { eventId: string }) {
+  const router = useRouter();
   const [event, setEvent] = useState<Event | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const login = useSelector((state: RootState) => state.currentLogin.value);
+  const [ticketQuantity, setTicketQuantity] = useState(1);
 
   useEffect(() => {
     const fetchEventDetails = async () => {
@@ -49,6 +53,10 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
 
     fetchEventDetails();
   }, [eventId]);
+
+  const handleBuyTickets = (eventId: string, quantity: number) => {
+    router.push(`/payment?eventId=${eventId}&quantity=${quantity}`);
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -139,21 +147,36 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
 
             {login.type === "user" ? (
               <div>
-                <button className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600">
-                  Buy Tickets
+                <button
+                  onClick={() => handleBuyTickets(eventId, ticketQuantity)}
+                  disabled={event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity}
+                  className={`w-full py-3 rounded-lg shadow-md ${
+                    event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity
+                      ? 'bg-gray-400 cursor-not-allowed' // Disabled state
+                      : 'bg-blue-500 hover:bg-green-600' // Enabled state
+                  } text-white`}
+                >
+                  {event.tickets_remaining <= 0 
+                    ? 'Sold Out' 
+                    : event.tickets_remaining < ticketQuantity
+                    ? 'Not Enough Tickets'
+                    : 'Buy Tickets'
+                  }
                 </button>
 
                 <div className="mt-4">
-                  <TicketQuantity />
+                  <TicketQuantity onChange={setTicketQuantity} />
                 </div>
                 <div className="mt-4">
                   <p className="text-sm text-gray-600">
-                    <strong>Capacity:</strong> {event.capacity} attendees
+                    {event.tickets_remaining > 0 
+                      ? `${event.tickets_remaining} tickets remaining` 
+                      : 'Sold Out'}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  {/* <p className="text-sm text-gray-600">
                     <strong>Waitlist Capacity:</strong>{" "}
                     {event.waitlist_capacity}
-                  </p>
+                  </p> */}
                   <p className="text-sm text-gray-600">
                     <strong>Availability:</strong>{" "}
                     {event.availability === "available" ? (

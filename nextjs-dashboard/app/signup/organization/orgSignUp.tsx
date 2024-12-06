@@ -11,10 +11,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "../../ui/button";
-import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { stat } from "fs";
 import { useDispatch } from "react-redux";
 import { storeLoginInfo } from "@/app/lib/feature/currentLogin";
 
@@ -76,10 +74,12 @@ export default function OrganizationSignUpForm() {
           type: "organization",
         })
       ); // Process the result
-      router.push("../../events");
+      router.push("../../dashboard/home");
     } else {
       // The request failed
-      console.error("Registration failed");
+      const err = await response.json();
+      alert(err.error);
+      console.log("Registration failed");
     }
   };
   return (
@@ -103,6 +103,7 @@ export default function OrganizationSignUpForm() {
                 type="name"
                 name="name"
                 placeholder="Enter your Organization Name"
+                maxLength={50}
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -124,6 +125,7 @@ export default function OrganizationSignUpForm() {
                 type="street"
                 name="street"
                 placeholder="Enter your Street"
+                pattern="^[A-Za-z0-9\s,.'-/#]+$"
                 required
                 value={street}
                 onChange={(e) => setStreet(e.target.value)}
@@ -145,6 +147,7 @@ export default function OrganizationSignUpForm() {
                 type="city"
                 name="city"
                 placeholder="Enter your City"
+                pattern="^[A-Za-z\s.'-]+$"
                 required
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
@@ -166,6 +169,7 @@ export default function OrganizationSignUpForm() {
                 type="state"
                 name="state"
                 placeholder="Enter your State"
+                pattern="^[A-Z]{2}$"
                 required
                 value={state}
                 onChange={(e) => setState(e.target.value)}
@@ -187,6 +191,7 @@ export default function OrganizationSignUpForm() {
                 type="zipcode"
                 name="zipcode"
                 placeholder="Enter your ZIP Code"
+                pattern="^\d{5}(-\d{4})?$"
                 required
                 value={zipCode}
                 onChange={(e) => setZipCode(e.target.value)}
@@ -208,6 +213,7 @@ export default function OrganizationSignUpForm() {
                 type="email"
                 name="email"
                 placeholder="Enter your email address"
+                pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -250,9 +256,9 @@ export default function OrganizationSignUpForm() {
                 id="phone"
                 type="phone"
                 name="phone"
-                placeholder="Enter your phone number"
+                placeholder="Enter your phone number, eg.123-456-7890"
+                pattern="^\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{4}$"
                 required
-                minLength={6}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
               />
@@ -272,6 +278,7 @@ export default function OrganizationSignUpForm() {
                   type="website"
                   name="website"
                   placeholder="Enter your organization's website"
+                  pattern="^https?:\/\/[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(?:\/[^\s]*)?$"
                   required
                   minLength={6}
                   value={website}

@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error creating event:", error);
     return NextResponse.json(
-      { message: "Failed to create event." },
+      { message: "Error creating event" },
       { status: 500 }
     );
   }
@@ -68,6 +68,7 @@ export async function createEvent(
 ) {
   return new Promise((resolve) => {
     const {
+      org_id,
       title,
       start_time,
       end_time,
@@ -80,10 +81,17 @@ export async function createEvent(
       zipcode,
       type,
       description,
+      genre,
+      event_link,
+      access_code,
+      speaker_name,
+      instructor_name,
+      topic,
     } = eventData;
 
     // Validate required fields
     if (
+      !org_id ||
       !title ||
       !start_time ||
       !end_time ||
@@ -101,7 +109,8 @@ export async function createEvent(
 
     // Set default or calculated fields
     const event_id = uuidv4(); // Generate a unique ID for the event
-    const org_id = "3193db8f-d359-48d6-9289-3efaf3bfb78f"; // Hardcode or dynamically fetch the org_id
+
+
     const date = new Date().toISOString().split("T")[0];
     const availability = parseInt(capacity) > 0 ? "available" : "unavailable";
 
@@ -136,6 +145,37 @@ export async function createEvent(
       if (err) {
         console.error("Error creating event:", err);
         return resolve({ error: "Internal server error" });
+      }
+
+      // Insert into specialization table based on event type
+      if (type === "Concert") {
+        const concertSql = `INSERT INTO Concert (event_id, genre) VALUES (?, ?)`;
+        connection.query(concertSql, [event_id, genre], (err) => {
+          if (err) console.error("Error creating concert:", err);
+        });
+      } else if (type === "Webinar") {
+        const webinarSql = `INSERT INTO Webinar (event_id, event_link, access_code) VALUES (?, ?, ?)`;
+        connection.query(
+          webinarSql,
+          [event_id, event_link, access_code],
+          (err) => {
+            if (err) console.error("Error creating webinar:", err);
+          }
+        );
+      } else if (type === "Conference") {
+        const conferenceSql = `INSERT INTO Conference (event_id, speaker_name) VALUES (?, ?)`;
+        connection.query(conferenceSql, [event_id, speaker_name], (err) => {
+          if (err) console.error("Error creating conference:", err);
+        });
+      } else if (type === "Workshop") {
+        const workshopSql = `INSERT INTO Workshop (event_id, instructor_name, topic) VALUES (?, ?, ?)`;
+        connection.query(
+          workshopSql,
+          [event_id, instructor_name, topic],
+          (err) => {
+            if (err) console.error("Error creating workshop:", err);
+          }
+        );
       }
 
       // Return the result if successful

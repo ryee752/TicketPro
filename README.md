@@ -29,7 +29,7 @@ DB_NAME=ticket_pro<br />
 
 2. Install pnpm
 ```bash
-      npm install -g pnpm
+   npm install -g pnpm
    ```
 
 3. Install dependencies using pnpm:
