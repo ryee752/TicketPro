@@ -18,12 +18,66 @@ interface PaymentMethodRow extends RowDataPacket {
   method_id: string;
 }
 
+interface EventAvailability extends RowDataPacket {
+  capacity: number;
+  current_tickets: number;
+  availability: string;
+}
+
 // Function to hash card details
 async function hashCardData(value: string): Promise<{ hash: string; salt: string }> {
   const saltRounds = 10;
   const salt = await bcrypt.genSalt(saltRounds);
   const hash = await bcrypt.hash(value, salt);
   return { hash, salt };
+}
+
+// Helper function to check event availability
+async function checkEventAvailability(connection: mysql.PoolConnection, eventId: string, requestedQuantity: number): Promise<boolean> {
+  const [availabilityData] = await connection.execute<EventAvailability[]>(
+    `SELECT 
+      e.capacity,
+      e.availability,
+      COUNT(t.ticket_id) as current_tickets
+    FROM Event e
+    LEFT JOIN Ticket t ON e.event_id = t.event_id
+    WHERE e.event_id = ?
+    GROUP BY e.event_id`,
+    [eventId]
+  );
+
+  if (!availabilityData || availabilityData.length === 0) {
+    throw new Error('Event not found');
+  }
+
+  const { capacity, current_tickets, availability } = availabilityData[0];
+  
+  if (availability === 'unavailable') {
+    return false;
+  }
+
+  const remainingCapacity = capacity - current_tickets;
+  return remainingCapacity >= requestedQuantity;
+}
+
+// Helper function to check if event is at full capacity
+async function isEventFullyBooked(connection: mysql.PoolConnection, eventId: string): Promise<boolean> {
+  const [availabilityData] = await connection.execute<EventAvailability[]>(
+    `SELECT 
+      e.capacity,
+      COUNT(t.ticket_id) as current_tickets
+    FROM Event e
+    LEFT JOIN Ticket t ON e.event_id = t.event_id
+    WHERE e.event_id = ?
+    GROUP BY e.event_id`,
+    [eventId]
+  );
+
+  if (!availabilityData || availabilityData.length === 0) {
+    throw new Error('Event not found');
+  }
+
+  return availabilityData[0].current_tickets >= availabilityData[0].capacity;
 }
 
 export async function POST(request: Request) {
@@ -35,6 +89,16 @@ export async function POST(request: Request) {
     try {
       await connection.beginTransaction();
       
+      // Check event availability before proceeding
+      const isAvailable = await checkEventAvailability(connection, eventId, parsedQuantity);
+      if (!isAvailable) {
+        await connection.rollback();
+        return NextResponse.json(
+          { error: 'Event is unavailable or has insufficient capacity' },
+          { status: 400 }
+        );
+      }
+
       // Hash only the card number
       const { hash: hashedCard, salt: cardSalt } = await hashCardData(paymentDetails.cardNumber);
       
@@ -106,6 +170,11 @@ export async function POST(request: Request) {
         [eventId]
       );
       const nextSeatNum = rows[0].max_seat + 1;
+      
+      
+    
+
+
 
       // Create tickets
       for (let i = 0; i < parsedQuantity; i++) {
@@ -116,6 +185,15 @@ export async function POST(request: Request) {
         await connection.execute(
           'INSERT INTO Ticket (ticket_id, user_id, event_id, expiration_date, price, seat_num) VALUES (?, ?, ?, ?, ?, ?)',
           [ticketId, userId, eventId, expiryDate, price, nextSeatNum + i]
+        );
+      }
+
+      // Check if event is now at full capacity and update availability if needed
+      const isFullyBooked = await isEventFullyBooked(connection, eventId);
+      if (isFullyBooked) {
+        await connection.execute(
+          'UPDATE Event SET availability = ? WHERE event_id = ?',
+          ['unavailable', eventId]
         );
       }
 

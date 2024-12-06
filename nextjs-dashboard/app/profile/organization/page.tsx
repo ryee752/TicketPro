@@ -1,5 +1,7 @@
-import TicketProLogo from "../../ui/ticketpro-logo";
+'use client';
 
+import { useState, useEffect } from 'react';
+import TicketProLogo from "../../ui/ticketpro-logo";
 import React from 'react';
 import { 
   UserIcon, 
@@ -7,10 +9,24 @@ import {
   CalendarIcon, 
   TagIcon, 
   EnvelopeIcon,
-  TicketIcon 
+  GlobeAltIcon
 } from '@heroicons/react/24/outline';
 
-// Types for our events
+// Interface for organization details (matching backend schema)
+interface Organization {
+  org_ID: string;
+  name: string;
+  email: string;
+  phone: string;
+  website: string | null;
+  street: string;
+  city: string;
+  state: string;
+  zipcode: number;
+  full_address: string;
+}
+
+// Types for events (matching backend schema)
 interface Event {
   id: number;
   title: string;
@@ -21,13 +37,53 @@ interface Event {
 }
 
 export default function Page() {
-  // Sample organization data
-  const organization = {
-    name: "Eventure Horizon",
-    phoneNumber: "(888) 123-4567",
-    email: "contact.eventurehorizon.com",
-    profileImage: "https://tinyurl.com/3z44fdrk"
-  };
+  const [organization, setOrganization] = useState<Organization | null>(null);
+  //const [currentEvents, setCurrentEvents] = useState<Event[]>([]);
+  //const [pastEvents, setPastEvents] = useState<Event[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchOrganizationInfo = async () => {
+      try {
+        const organizationId = '9617c140-643d-495d-b3e5-4e0645dfedd5'; // Your test org_ID
+        
+        // Fetch organization details
+        const orgResponse = await fetch(`/api/profile/organization?organizationId=${organizationId}`);
+        
+        if (!orgResponse.ok) {
+          throw new Error('Failed to fetch organization details');
+        }
+        const orgData = await orgResponse.json();
+        setOrganization(orgData.organization);
+
+        // Fetch events
+        // const eventsResponse = await fetch(`/api/events?organizationId=${organizationId}`);
+        // if (!eventsResponse.ok) {
+        //   throw new Error('Failed to fetch events');
+        // }
+        // const eventsData = await eventsResponse.json();
+        // setCurrentEvents(eventsData.currentEvents || []);
+        // setPastEvents(eventsData.pastEvents || []);
+
+        setIsLoading(false);
+      } catch (err) {
+        console.error('Fetch error:', err);
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrganizationInfo();
+  }, []);
+
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="flex justify-center items-center h-screen text-red-500">{error}</div>;
+  }
 
   // Sample events data
   const hostedEvents: Event[] = [
@@ -112,7 +168,7 @@ export default function Page() {
 
     return (
       <span className={`px-2 py-1 rounded-full text-sm ${colors[category]}`}>
-        {category.charAt(0).toUpperCase() + category.slice(1)}
+        {category}
       </span>
     );
   };
@@ -147,6 +203,7 @@ export default function Page() {
     );
   };
 
+  // Render page with org info
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-45">
@@ -157,19 +214,15 @@ export default function Page() {
       
       <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-12">
         {/* Left Column - Profile */}
+        {organization && (
         <div className="md:col-span-4 space-y-6">
           <div className="bg-white rounded-lg shadow-md p-6">
             <div className="flex flex-col items-center">
-              <img
-                src={organization.profileImage}
-                alt="Profile"
-                className="w-32 h-32 rounded-full mb-4 object-cover"
-              />
               <h2 className="text-2xl font-semibold mb-4">{organization.name}</h2>
               <div className="w-full space-y-3">
                 <div className="flex items-center gap-3">
                   <UserIcon className="text-gray-400 w-5 h-5" />
-                  <span>{organization.phoneNumber}</span>
+                  <span>{organization.phone}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <EnvelopeIcon className="text-gray-400 w-5 h-5" />
@@ -179,8 +232,10 @@ export default function Page() {
             </div>
           </div>
         </div>
+        )
+}
 
-        {/* Right Column - Events */}
+       { /* Right Column - Events */}
         <div className="md:col-span-8 space-y-6">
           {/* Hosted Events Section */}
           <div>
@@ -210,3 +265,4 @@ export default function Page() {
     </main>
   );
 }
+
