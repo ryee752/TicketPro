@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connection from "../../../lib/db";
 
-// Interface to match the Organization table structure
 interface OrganizationResult {
   org_ID: string;
   name: string;
@@ -17,14 +16,6 @@ interface OrganizationResult {
 
 export async function GET(request: NextRequest) {
   try {
-    // const organizationId = request.nextUrl.searchParams.get('organizationId');
-
-    // if (!organizationId) {
-    //   return NextResponse.json(
-    //     { message: "Organization ID is required" },
-    //     { status: 400 }
-    //   );
-    // }
 
     const fetchOrganizationDetails = (): Promise<OrganizationResult | null> => {
       return new Promise((resolve, reject) => {
@@ -41,7 +32,6 @@ export async function GET(request: NextRequest) {
             if (results && results.length > 0) {
               const organization = results[0] as OrganizationResult;
               
-              // Combine first and last name for the profile display
               const organizationResult = {
                 ...organization
               };
