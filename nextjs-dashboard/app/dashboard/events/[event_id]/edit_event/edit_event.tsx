@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "../../../ui/button";
+import { Button } from "../../../../ui/button";
 
 export default function EditEventForm({ eventId }: { eventId: string }) {
   const [title, setTitle] = useState("");
@@ -156,7 +156,7 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
 
     if (response.ok) {
       console.log("Event edited successfully");
-      router.push(`/events/${eventId}/event_detail`);
+      router.push(`/dashboard/events/${eventId}/event_detail`);
     } else {
       console.error("Failed to edit event");
     }
@@ -176,7 +176,7 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
 
       if (response.ok) {
         console.log("Event deleted successfully");
-        router.push("/events");
+        router.push("/dashboard/events");
       } else {
         console.error("Failed to delete event");
       }
