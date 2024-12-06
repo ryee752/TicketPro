@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import TicketQuantity from "./component/ticketQuantity";
 import { useSelector } from "react-redux";
@@ -147,7 +147,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
 
             {login.type === "user" ? (
               <div>
-                <button 
+                <button
                   onClick={() => handleBuyTickets(eventId, ticketQuantity)}
                   disabled={event.tickets_remaining <= 0 || event.tickets_remaining < ticketQuantity}
                   className={`w-full py-3 rounded-lg shadow-md ${

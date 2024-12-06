@@ -309,7 +309,12 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
                 {field.replace("_", " ").toUpperCase()}
               </label>
               <input
-                className="block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm"
+                className={
+                  "block w-full rounded-md border border-gray-200 py-[9px] px-3 text-sm"
+                }
+                style={{
+                  backgroundColor: "lightgray",
+                }}
                 id={field}
                 type="number"
                 name={field}
@@ -319,6 +324,7 @@ export default function EditEventForm({ eventId }: { eventId: string }) {
                   setNumberInputs({ ...numberInputs, [field]: e.target.value })
                 }
                 placeholder={`Enter ${field}`}
+                disabled
               />
             </div>
           ))}

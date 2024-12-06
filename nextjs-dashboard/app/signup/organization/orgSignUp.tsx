@@ -77,8 +77,8 @@ export default function OrganizationSignUpForm() {
       router.push("../../dashboard/home");
     } else {
       // The request failed
-      const err = await response.json(); 
-      alert(err.error)
+      const err = await response.json();
+      alert(err.error);
       console.log("Registration failed");
     }
   };
