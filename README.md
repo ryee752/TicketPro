@@ -21,7 +21,14 @@ DB_PASSWORD=password<br />
 DB_NAME=ticket_pro<br />
 2. Add the .env file to the nextjs-dashboard directory
 
-###
+### Set seed data1
+1. Execute the insert.sql
+2. line 207-209 in the app/page.tsx, uncomment
+   ```bash
+     // useEffect(() => {
+     //   imageForEvents();
+     // }, []);
+   ```
 
 ## Installation
 
@@ -44,3 +51,13 @@ DB_NAME=ticket_pro<br />
    ```
 
 2. Open http://localhost:3000 on your browser
+
+
+### Set seed data2
+1. Execute the insert.sql
+2. line 207-209 in the app/page.tsx, comment again
+   ```bash
+      useEffect(() => {
+        imageForEvents();
+      }, []);
+   ```
