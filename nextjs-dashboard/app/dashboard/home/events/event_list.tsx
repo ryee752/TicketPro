@@ -3,10 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../lib/store";
-import { Button } from "../ui/button";
-import { ArrowLeftIcon } from "@heroicons/react/20/solid";
-import router from "next/router";
+import { RootState } from "../../../lib/store";
 
 type Event = {
   event_id: string;
@@ -44,10 +41,6 @@ export default function EventList() {
   });
   const [loading, setLoading] = useState(false);
   const login = useSelector((state: RootState) => state.currentLogin.value);
-
-  const handleGoBack = () => {
-    router.back(); // Navigate to the previous page in history
-  };
 
   const fetchEvents = async () => {
     setLoading(true);
@@ -109,11 +102,7 @@ export default function EventList() {
 
   return (
     <main className="min-h-screen bg-gray-100">
-      <div className="m-4">
-        <Button className="mt-4 w-full" onClick={handleGoBack}>
-          Go Back to Previous Page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
-        </Button>
-      </div>
+      {/* Header */}
       <div className="relative flex items-center justify-between bg-blue-500 p-4 text-white">
         <h1 className="text-xl font-bold">Event List</h1>
         {login.type === "organization" ? (
@@ -279,10 +268,11 @@ export default function EventList() {
                   </p>
                   {event.type && (
                     <span
-                      className={`inline-block mt-2 px-3 py-1 text-sm font-semibold rounded-full ${event.type === "Conferences"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-purple-100 text-purple-800"
-                        }`}
+                      className={`inline-block mt-2 px-3 py-1 text-sm font-semibold rounded-full ${
+                        event.type === "Conferences"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-purple-100 text-purple-800"
+                      }`}
                     >
                       {event.type}
                     </span>

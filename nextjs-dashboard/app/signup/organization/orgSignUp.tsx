@@ -9,11 +9,11 @@ import {
   HomeIcon,
   GlobeAltIcon,
 } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "../../ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { storeLoginInfo } from "@/app/lib/feature/currentLogin";
 
 export default function OrganizationSignUpForm() {
@@ -29,6 +29,19 @@ export default function OrganizationSignUpForm() {
   const [formError, setFormError] = useState("");
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const currentLogin = useSelector((state: any) => state.currentLogin.value);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (currentLogin.id !== "") {
+      router.push("../../dashboard/home");
+    }
+  }, [currentLogin, router]);
+  
+  const handleGoBack = () => {
+    router.back(); // Navigate to the previous page in history
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -300,6 +313,11 @@ export default function OrganizationSignUpForm() {
         <div>
           <Button type="submit" className="mt-4 w-full">
             Sign Up <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
+        </div>
+        <div>
+          <Button className="mt-4 w-full" onClick={handleGoBack}>
+            Go Back to Previous Page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
         </div>
       </div>

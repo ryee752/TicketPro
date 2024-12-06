@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import TicketQuantity from "./component/ticketQuantity";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/lib/store";
-import { Button } from "@/app/ui/button";
-import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 
 type Event = {
   event_id: string;
@@ -68,11 +66,6 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
   if (event.image) {
     image = Buffer.from(event.image).toString("base64");
   }
-
-  const handleGoBack = () => {
-    router.back(); // Navigate to the previous page in history
-  };
-
   return (
     <main className="min-h-screen bg-gray-100">
       <div className="relative flex items-center justify-between text-white mb-10">
@@ -153,7 +146,7 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
 
             {login.type === "user" ? (
               <div>
-                <button
+                <button 
                   onClick={() => handleBuyTickets(eventId, ticketQuantity)}
                   className="w-full bg-blue-500 text-white py-3 rounded-lg shadow-md hover:bg-green-600"
                 >
@@ -187,11 +180,6 @@ export default function EventDetailPage({ eventId }: { eventId: string }) {
               </div>
             ) : null}
           </div>
-        </div>
-        <div>
-          <Button className="mt-4 w-full" onClick={handleGoBack}>
-            Go Back to Previous Page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
-          </Button>
         </div>
       </div>
     </main>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "../../ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/lib/store";
+import { ArrowLeftIcon } from "@heroicons/react/20/solid";
 
 export default function CreateEventForm() {
   const login = useSelector((state: RootState) => state.currentLogin.value);
@@ -92,6 +93,10 @@ export default function CreateEventForm() {
     } else {
       console.error("Failed to create event");
     }
+  };
+
+  const handleGoBack = () => {
+    router.back(); // Navigate to the previous page in history
   };
 
   return (
@@ -360,9 +365,16 @@ export default function CreateEventForm() {
           )}
         </div>
       </div>
-      <Button type="submit" className="mt-4 w-full">
-        Create Event
-      </Button>
+      <div>
+        <Button type="submit" className="mt-4 w-full">
+          Create Event
+        </Button>
+      </div>
+      <div>
+        <Button className="mt-4 w-full" onClick={handleGoBack}>
+          Go Back to Previous Page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+        </Button>
+      </div>
     </form>
   );
 }

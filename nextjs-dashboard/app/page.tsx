@@ -23,8 +23,8 @@ export default function Page() {
     return () => window.removeEventListener("unload", handleUnload);
   }, [dispatch]);
   useEffect(() => {
-    if (currentLogin !== -1) {
-      router.push("../../events");
+    if (currentLogin.id !== "") {
+      router.push("/dashboard/home");
     }
   }, [currentLogin, router]);
 

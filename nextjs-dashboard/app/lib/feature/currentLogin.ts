@@ -7,7 +7,10 @@ export interface CurrentLogin {
 }
 
 const initialState: CurrentLogin = {
-  value: -1,
+  value: {
+    id: "",
+    type: "",
+  }
 };
 
 export const currentLogin = createSlice({

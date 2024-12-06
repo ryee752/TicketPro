@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import NavLinks from '@/app/dashboard/nav-links';
+import NavLinks from '@/app/dashboard/home/nav-links';
 import AcmeLogo from '@/app/ui/ticketpro-logo';
 import { PowerIcon } from '@heroicons/react/24/outline';
 

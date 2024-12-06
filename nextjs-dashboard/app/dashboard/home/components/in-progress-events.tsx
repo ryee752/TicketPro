@@ -73,7 +73,7 @@ export default function EventList() {
           return ( //When users click on event card, send user to event-details page
             <Link
               key={event.event_id}
-              href={`/dashboard/events/${event.event_id}/event_detail`}
+              href={`/events/${event.event_id}/event_detail`}
             >
               <div
                 key={event.event_id}
