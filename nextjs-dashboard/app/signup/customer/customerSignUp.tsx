@@ -7,7 +7,7 @@ import {
   PencilSquareIcon,
   PhoneIcon,
 } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "../../ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -28,10 +28,14 @@ export default function SignUpForm() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (currentLogin !== -1) {
+    if (currentLogin.id !== "") {
       router.push("../../dashboard/home");
     }
   }, [currentLogin, router]);
+
+  const handleGoBack = () => {
+    router.back(); // Navigate to the previous page in history
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -215,6 +219,11 @@ export default function SignUpForm() {
             <Button type="submit" className="mt-4 w-full">
               Sign Up{" "}
               <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+            </Button>
+          </div>
+          <div>
+            <Button className="mt-4 w-full" onClick={handleGoBack}>
+              Go Back to Previous Page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
             </Button>
           </div>
         </div>

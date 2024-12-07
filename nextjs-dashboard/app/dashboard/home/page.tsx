@@ -1,8 +1,24 @@
+"use client"
 import TicketProLogo from "../../ui/ticketpro-logo";
 import UserDisplay from "./user/user-display"
 import OrganizationDisplay from "./organization/organization-display"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
  
-export default async function Page() {
+export default function Page() {
+  const router = useRouter();
+  const dispatch = useDispatch();
+
+  const currentLogin = useSelector((state: any) => state.currentLogin.value);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (currentLogin.id == "") {
+      router.push("/");
+    }
+  }, [currentLogin, router]);
+
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-45">

@@ -5,7 +5,7 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "../../ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -21,16 +21,18 @@ export default function LoginForm() {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  const currentLogin = useSelector(
-    (state: RootState) => state.currentLogin.value
-  );
-  // console.log("ID:" + currentLogin.value);
+  const currentLogin = useSelector((state: any) => state.currentLogin.value);
+
   // Redirect if already logged in
   useEffect(() => {
-    if (currentLogin !== -1) {
+    if (currentLogin.id !== "") {
       router.push("../../dashboard/home");
     }
   }, [currentLogin, router]);
+
+  const handleGoBack = () => {
+    router.back(); // Navigate to the previous page in history
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -131,7 +133,11 @@ export default function LoginForm() {
             Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
         </div>
-
+        <div>
+          <Button className="mt-4 w-full" onClick={handleGoBack}>
+            Go Back to Previous Page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+          </Button>
+        </div>
         <div className="mt-4">
           <Link href="/signup">
             <span className="text-blue-600">
