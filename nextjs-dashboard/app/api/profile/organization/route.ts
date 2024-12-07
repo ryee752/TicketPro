@@ -25,33 +25,35 @@ export async function GET(request: NextRequest) {
     //     { status: 400 }
     //   );
     // }
+    const url = new URL(request.url);
+    const user_ID = url.searchParams.get("organizationId");
 
     const fetchOrganizationDetails = (): Promise<OrganizationResult | null> => {
       return new Promise((resolve, reject) => {
         connection.query(
-        `SELECT *
+          `SELECT *
           FROM Organization 
           WHERE org_ID = ?
         `,
-        [request.nextUrl.searchParams.get('organizationId')],
-        (err, results: any[]) => {
+          [user_ID],
+          (err, results: any[]) => {
             if (err) reject(err);
-            
+
             // Check if results exist and have at least one item
             if (results && results.length > 0) {
               const organization = results[0] as OrganizationResult;
-              
+
               // Combine first and last name for the profile display
               const organizationResult = {
-                ...organization
+                ...organization,
               };
 
               resolve(organizationResult);
             } else {
               resolve(null);
             }
-        }
-        )
+          }
+        );
       });
     };
 
@@ -64,10 +66,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({
-      organization: organizationDetails
-    }, { status: 200 });
-
+    return NextResponse.json(
+      {
+        organization: organizationDetails,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error fetching Organization details:", error);
     return NextResponse.json(

@@ -1,5 +1,5 @@
-import OrganizationSignUpForm from './orgSignUp';
-import TicketProLogo from '@/app/ui/ticketpro-logo';
+import OrganizationSignUpForm from "./orgSignUp";
+import TicketProLogo from "@/app/ui/ticketpro-logo";
 
 export default function Page() {
   return (
