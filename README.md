@@ -44,13 +44,23 @@ DB_NAME=ticket_pro<br />
    pnpm i
    ```
 
-## Starting the application
+## Starting the application in developer mode
 1. Start the development server with the following command:
 ```bash
    pnpm dev
    ```
-
 2. Open http://localhost:3000 on your browser
+
+
+## Building Running the application
+1. Build the application with the following command:
+```bash
+   pnpm build
+   ```
+2. Running the application with the following command:
+```bash
+   pnpm start
+   ```
 
 
 ### Set seed data2
