@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/lib/store";
+import { useRouter } from "next/navigation";
 
 // Interface for user details
 interface User {
@@ -38,6 +39,13 @@ export default function Page() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (login.id == "") {
+      router.push("/");
+    }
+  }, [login, router]);
 
   // Fetch events when component mounts
   useEffect(() => {

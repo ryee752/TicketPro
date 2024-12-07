@@ -13,6 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useSelector } from "react-redux";
 import { RootState } from "@/app/lib/store";
+import { useRouter } from "next/navigation";
 
 // Interface for organization details (matching backend schema)
 interface Organization {
@@ -45,6 +46,13 @@ export default function Page() {
   //const [pastEvents, setPastEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (login.id == "") {
+      router.push("/");
+    }
+  }, [login, router]);
 
   useEffect(() => {
     const fetchOrganizationInfo = async () => {
