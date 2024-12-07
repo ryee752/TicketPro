@@ -10,7 +10,7 @@ import { RootState } from "../../../lib/store";
 
 export default function UserDisplay() {
     const login = useSelector((state: RootState) => state.currentLogin.value); //Value used to distinguish if current user is an 'attendee' or 'organization'
-    
+
     if (login.type !== "user") {
         return null; // Render nothing if the user is not of type 'user'
     }

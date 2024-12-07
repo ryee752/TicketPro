@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import TicketProLogo from "../../ui/ticketpro-logo";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../lib/store";
 import { 
-  UserIcon, 
   MapPinIcon, 
   CalendarIcon, 
   TagIcon, 
   EnvelopeIcon,
-  TicketIcon 
+  TicketIcon,
+  PhoneIcon
 } from '@heroicons/react/24/outline';
 
 // Interface for user details
@@ -31,6 +32,12 @@ interface Event {
 }
 
 export default function Page() {
+  const login = useSelector((state: RootState) => state.currentLogin.value); //Value used to distinguish if current user is an 'attendee' or 'organization'
+
+  if (login.type !== "user") {
+      return null; // Render nothing if the user is not of type 'user'
+  }
+
   // State to store fetched data
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -173,7 +180,7 @@ export default function Page() {
           <h3 className="font-semibold text-lg mb-2">{event.title}</h3>
           <div className="space-y-2 text-sm text-gray-600">
             <div className="flex items-center gap-2">
-              <EnvelopeIcon className="w-3 h-3"/>
+              <MapPinIcon className="w-3 h-3"/>
               <span>{event.location}</span>
             </div>
             <div className="flex items-center gap-2">
@@ -194,28 +201,16 @@ export default function Page() {
   // Render page with user info
   return (
     <main className="flex min-h-screen flex-col p-6">
-      {/* Logo section */}
-      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-45">
-        <div className="flex items-center text-white">
-          <TicketProLogo/>
-        </div>
-      </div>
-      
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-12">
+
         {/* Profile Column */}
         {user && (
-          <div className="md:col-span-4 space-y-6">
-            <div className="bg-white rounded-lg shadow-md p-6">
+          <div className='w-full flex items-center justify-center'>
+            <div className="bg-white rounded-lg shadow-md p-6 w-1/2">
               <div className="flex flex-col items-center">
-                <img
-                  src={user.profile_image}
-                  alt="Profile"
-                  className="w-32 h-32 rounded-full mb-4 object-cover"
-                />
-                <h2 className="text-2xl font-semibold mb-4">{user.name}</h2>
-                <div className="w-full space-y-3">
+                <h2 className="text-2xl font-semibold mb-8">{user.name}</h2>
+                <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <UserIcon className="text-gray-400 w-5 h-5" />
+                    <PhoneIcon className="text-gray-400 w-5 h-5" />
                     <span>{user.phone}</span>
                   </div>
                   <div className="flex items-center gap-3">
@@ -227,6 +222,8 @@ export default function Page() {
             </div>
           </div>
         )}
+      
+      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-12">
 
         {/* Right Column - Events */}
         <div className="md:col-span-8 space-y-6">
