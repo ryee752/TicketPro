@@ -208,18 +208,18 @@ export default function Page() {
   //   imageForEvents();
   // }, []);
 
-  useEffect(() => {
-    const handleUnload = () => {
-      dispatch(reset()); // Reset Redux state
-    };
+  // useEffect(() => {
+  //   const handleUnload = () => {
+  //     dispatch(reset()); // Reset Redux state
+  //   };
 
-    window.addEventListener("unload", handleUnload);
-    return () => window.removeEventListener("unload", handleUnload);
-  }, [dispatch]);
+  //   window.addEventListener("unload", handleUnload);
+  //   return () => window.removeEventListener("unload", handleUnload);
+  // }, [dispatch]);
 
   useEffect(() => {
-    if (currentLogin !== -1) {
-      router.push("../../events");
+    if (currentLogin.id !== "") {
+      router.push("/dashboard/home");
     }
   }, [currentLogin, router]);
 

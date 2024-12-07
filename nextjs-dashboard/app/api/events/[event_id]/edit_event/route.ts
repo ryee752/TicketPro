@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Helper function for editing an event
-export async function editEvent(eventData: Record<string, string>, image: any) {
+async function editEvent(eventData: Record<string, string>, image: any) {
   return new Promise((resolve) => {
     const {
       event_id,

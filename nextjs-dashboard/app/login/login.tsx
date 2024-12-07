@@ -1,6 +1,6 @@
 "use client"
 import { lusitana } from '../ui/fonts';
-import { ArrowRightIcon } from '@heroicons/react/20/solid';
+import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/20/solid';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 
@@ -14,6 +14,11 @@ export default function UserOrOrganization() {
   const handleOrg = () =>{
     router.push('/login/organization');
   }
+
+  const handleGoBack = () => {
+    router.back(); // Navigate to the previous page in history
+  };
+
   return (
     <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
       <h1 className={`${lusitana.className} mb-3 text-2xl`}>
@@ -30,6 +35,11 @@ export default function UserOrOrganization() {
             Organization <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
           </Button>
         </div>
+        <div>
+            <Button className="mt-4 w-full" onClick={handleGoBack}>
+              Go Back to Previous Page <ArrowLeftIcon className="ml-auto h-5 w-5 text-gray-50" />
+            </Button>
+          </div>
       </div>
     </div>
   )

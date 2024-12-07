@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function loginOrg(email: string, password: string) {
+async function loginOrg(email: string, password: string) {
   return new Promise((resolve, reject) => {
     // First query to find the user
     connection.query(

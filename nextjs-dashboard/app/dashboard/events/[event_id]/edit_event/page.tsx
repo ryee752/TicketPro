@@ -1,15 +1,14 @@
-import AcmeLogo from "@/app/ui/ticketpro-logo";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import Link from "next/link";
-import EditEventForm from "./edit_event";
+import { use } from "react";
 import TicketProLogo from "../../../../ui/ticketpro-logo";
+import EditEventForm from "./edit_event";
 
-export default async function Page({
+export default function Page({
   params,
 }: {
-  params: { event_id: string };
+  params: Promise<{ event_id: string }>;
 }) {
-  const { event_id } = await params;
+  const { event_id } = use(params);
+
   return (
     <main className="flex min-h-screen flex-col p-6">
       <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-45">

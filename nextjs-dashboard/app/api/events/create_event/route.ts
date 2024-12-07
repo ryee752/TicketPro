@@ -62,10 +62,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Helper function for creating an event
-export async function createEvent(
-  eventData: Record<string, string>,
-  image: Buffer
-) {
+async function createEvent(eventData: Record<string, string>, image: Buffer) {
   return new Promise((resolve) => {
     const {
       org_id,
@@ -109,7 +106,6 @@ export async function createEvent(
 
     // Set default or calculated fields
     const event_id = uuidv4(); // Generate a unique ID for the event
-
 
     const date = new Date().toISOString().split("T")[0];
     const availability = parseInt(capacity) > 0 ? "available" : "unavailable";

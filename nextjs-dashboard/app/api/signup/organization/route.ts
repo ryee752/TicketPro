@@ -29,15 +29,14 @@ export async function POST(request: NextRequest) {
       password,
     });
 
-
-    // check if user already exists 
+    // check if user already exists
     console.log("Checking User Email");
     const existURes: any = await checkExistingUser(email);
     console.log("Email Checked");
     if (existURes.error) {
       return NextResponse.json({ error: existURes.error }, { status: 500 });
     }
-    
+
     // checks if org already exists
     console.log("Checking Organization Email");
     const existORes: any = await checkExistingOrganization(email);
@@ -45,7 +44,7 @@ export async function POST(request: NextRequest) {
     if (existORes.error) {
       return NextResponse.json({ error: existORes.error }, { status: 500 });
     }
-    
+
     // Await the registration result
     const result: any = await registerOrg(
       name,
@@ -81,8 +80,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function checkExistingUser(email: string) {
-
+async function checkExistingUser(email: string) {
   console.log("Checking for existing User with email: " + email);
 
   // Check if User exists with this email
@@ -98,19 +96,20 @@ export async function checkExistingUser(email: string) {
         let rows: any = result;
         if (rows.length === 0) {
           console.log("No registered User with this email");
-          return resolve({ message: "No User registered with email: " + email });
-        }
-        else {
+          return resolve({
+            message: "No User registered with email: " + email,
+          });
+        } else {
           console.error("User already registered with email: " + email);
-          return resolve({ error: "User already registered with email: " + email });
+          return resolve({
+            error: "User already registered with email: " + email,
+          });
         }
       }
     );
   });
 }
-
-export async function checkExistingOrganization(email: string) {
-
+async function checkExistingOrganization(email: string) {
   console.log("Checking for existing Organization with email: " + email);
 
   // Check if Organization exists with this email
@@ -126,18 +125,21 @@ export async function checkExistingOrganization(email: string) {
         let rows: any = result;
         if (rows.length === 0) {
           console.log("No registered Organization with this email");
-          return resolve({ message: "No Organization registered with email: " + email });
-        }
-        else {
+          return resolve({
+            message: "No Organization registered with email: " + email,
+          });
+        } else {
           console.error("Organization already registered with email: " + email);
-          return resolve({ error: "Organization already registered with email: " + email });
+          return resolve({
+            error: "Organization already registered with email: " + email,
+          });
         }
       }
     );
   });
 }
 
-export async function registerOrg(
+async function registerOrg(
   name: string,
   website: string,
   phone: string,
@@ -204,7 +206,6 @@ export async function registerOrg(
 
     // Return org_ID and email on successful registration
     return { id: org_ID, email };
-
   } catch (error) {
     console.error("Error registering organization:", error);
     throw new Error("Internal server error");
