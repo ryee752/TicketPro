@@ -183,8 +183,8 @@ export async function POST(request: Request) {
         expiryDate.setFullYear(expiryDate.getFullYear() + 1);
         
         await connection.execute(
-          'INSERT INTO Ticket (ticket_id, user_id, event_id, expiration_date, price, seat_num) VALUES (?, ?, ?, ?, ?, ?)',
-          [ticketId, userId, eventId, expiryDate, price, nextSeatNum + i]
+          'INSERT INTO Ticket (ticket_id, user_id, event_id, expiration_date, seat_num) VALUES (?, ?, ?, ?, ?)',
+          [ticketId, userId, eventId, expiryDate, nextSeatNum + i]
         );
       }
 
