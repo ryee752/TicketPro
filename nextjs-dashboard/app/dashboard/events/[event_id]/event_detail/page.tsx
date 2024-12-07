@@ -1,12 +1,13 @@
+import { use } from "react";
 import TicketProLogo from "../../../../ui/ticketpro-logo";
 import EventDetailPage from "./event_detail";
 
-export default async function Page({
+export default function Page({
   params,
 }: {
-  params: { event_id: string };
+  params: Promise<{ event_id: string }>;
 }) {
-  const { event_id } = await params;
+  const { event_id } = use(params);
   return (
     <main className="flex min-h-screen flex-col p-6">
       {/* Header with Logo */}

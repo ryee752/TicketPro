@@ -28,91 +28,90 @@ type Event = {
   topic?: string; // For Workshops
 };
 
-export async function GET(
-  request: Request,
-  { params }: { params: { event_id: string } }
-) {
-  return new Promise(async (resolve) => {
-    const { event_id } = await params; // Access params directly
+export async function GET(request: Request) {
+  try {
+    const url = new URL(request.url);
+    const event_id = url.pathname.split("/")[3]; // Extract event_id from the URL
 
     if (!event_id) {
-      return resolve(
-        NextResponse.json({ message: "Event ID is required." }, { status: 400 })
+      return NextResponse.json(
+        { message: "Event ID is required." },
+        { status: 400 }
       );
     }
 
     // SQL query to fetch the event details
     const sql = `
-  SELECT 
-    e.event_id,
-    e.org_id,
-    e.title, 
-    e.start_time, 
-    e.end_time, 
-    e.capacity, 
-    e.waitlist_capacity, 
-    e.price, 
-    e.street, 
-    e.city, 
-    e.state, 
-    e.zipcode, 
-    e.image AS image, 
-    e.type, 
-    e.description, 
-    e.availability, 
-    o.name AS org_name,
-    c.genre,
-    w.event_link, 
-    w.access_code,
-    conf.speaker_name,
-    ws.instructor_name, 
-    ws.topic,
-    e.capacity - COUNT(DISTINCT t.ticket_id) as tickets_remaining
-  FROM Event e
-  JOIN Organization o ON e.org_id = o.org_id
-  LEFT JOIN Concert c ON e.event_id = c.event_id
-  LEFT JOIN Webinar w ON e.event_id = w.event_id
-  LEFT JOIN Conference conf ON e.event_id = conf.event_id
-  LEFT JOIN Workshop ws ON e.event_id = ws.event_id
-  LEFT JOIN Ticket t ON e.event_id = t.event_id
-  WHERE e.event_id = ?
-  GROUP BY e.event_id`;
+      SELECT 
+        e.event_id,
+        e.org_id,
+        e.title, 
+        e.start_time, 
+        e.end_time, 
+        e.capacity, 
+        e.waitlist_capacity, 
+        e.price, 
+        e.street, 
+        e.city, 
+        e.state, 
+        e.zipcode, 
+        e.image AS image, 
+        e.type, 
+        e.description, 
+        e.availability, 
+        o.name AS org_name,
+        c.genre,
+        w.event_link, 
+        w.access_code,
+        conf.speaker_name,
+        ws.instructor_name, 
+        ws.topic,
+        e.capacity - COUNT(DISTINCT t.ticket_id) as tickets_remaining
+      FROM Event e
+      JOIN Organization o ON e.org_id = o.org_id
+      LEFT JOIN Concert c ON e.event_id = c.event_id
+      LEFT JOIN Webinar w ON e.event_id = w.event_id
+      LEFT JOIN Conference conf ON e.event_id = conf.event_id
+      LEFT JOIN Workshop ws ON e.event_id = ws.event_id
+      LEFT JOIN Ticket t ON e.event_id = t.event_id
+      WHERE e.event_id = ?
+      GROUP BY e.event_id;
+    `;
     const values = [event_id];
 
     // Execute the query
-    connection.query(sql, values, (err, results: RowDataPacket[]) => {
-      if (err) {
-        console.error("Error fetching event details:", err);
-        return resolve(
-          NextResponse.json(
-            { message: "Internal server error" },
-            { status: 500 }
-          )
-        );
-      }
-
-      // Check if the event exists
-      if (results.length === 0) {
-        return resolve(
-          NextResponse.json({ message: "Event not found." }, { status: 404 })
-        );
-      }
-
-      const event = results[0] as Event;
-
-      // Convert the image BLOB to base64 if it exists
-      // if (event.image) {
-      //   event.image = Buffer.from(event.image).toString("base64");
-      // }
-
-      // Return the event details
-      console.log("Read event detail successfully:", event);
-      return resolve(
-        NextResponse.json({
-          message: "Event details fetched successfully!",
-          event,
-        })
-      );
+    const results = await new Promise<RowDataPacket[]>((resolve, reject) => {
+      connection.query(sql, values, (err, results) => {
+        if (err) return reject(err);
+        resolve(results as RowDataPacket[]);
+      });
     });
-  });
+
+    // Check if the event exists
+    if (results.length === 0) {
+      return NextResponse.json(
+        { message: "Event not found." },
+        { status: 404 }
+      );
+    }
+
+    const event = results[0] as Event;
+
+    // Optionally convert the image BLOB to base64 if needed
+    // if (event.image) {
+    //   event.image = Buffer.from(event.image).toString("base64");
+    // }
+
+    // Return the event details
+    return NextResponse.json({
+      message: "Event details fetched successfully!",
+      event,
+    });
+  } catch (error) {
+    console.error("Error fetching event details:", error);
+    return NextResponse.json(
+      { message: "Internal server error." },
+      { status: 500 }
+    );
+  }
 }
