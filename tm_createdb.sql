@@ -34,7 +34,7 @@ CREATE TABLE Organization (
     state CHAR(2),
     zipcode INT,
     PRIMARY KEY (org_ID),
-    FOREIGN KEY (password_ID) REFERENCES Passwords(password_ID) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (password_ID) REFERENCES Passwords(password_ID) ON DELETE CASCADE ON UPDATE CASCADE,
     INDEX mail (email)
 );
 
