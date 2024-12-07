@@ -13,24 +13,27 @@ interface UserResult {
 export async function GET(request: NextRequest) {
   try {
     // Function to fetch user details
+    const url = new URL(request.url);
+    const user_ID = url.searchParams.get("userId");
+
     const fetchUserDetails = (): Promise<UserResult | null> => {
       return new Promise((resolve, reject) => {
         connection.query(
           `SELECT user_ID, first_name, last_name, phone, email
            FROM User 
            WHERE user_ID = ?`,
-          [request.nextUrl.searchParams.get('userId')],
+          [user_ID],
           (err, results: any[]) => {
             if (err) reject(err);
-            
+
             // Check if results exist and have at least one item
             if (results && results.length > 0) {
               const user = results[0] as UserResult;
-              
+
               // Combine first and last name for the profile display
               const profileResult = {
                 ...user,
-                name: `${user.first_name} ${user.last_name}`
+                name: `${user.first_name} ${user.last_name}`,
               };
 
               resolve(profileResult);
@@ -50,12 +53,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json({
-      user: userDetails
-    }, { status: 200 });
-
+    return NextResponse.json(
+      {
+        user: userDetails,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error fetching user details:", error);
-    return NextResponse.json({ message: "Failed to fetch user details" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to fetch user details" },
+      { status: 500 }
+    );
   }
 }

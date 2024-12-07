@@ -1,6 +1,5 @@
-import TicketProLogo from '@/app/ui/ticketpro-logo';
-import SignUpForm from './customerSignUp';
-
+import TicketProLogo from "@/app/ui/ticketpro-logo";
+import SignUpForm from "./customerSignUp";
 
 export default function Page() {
   return (
