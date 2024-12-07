@@ -13,12 +13,10 @@ export default function AppProvider({
   return (
     <Provider store={store}>
       {/* Only render PersistGate if persistor exists */}
-      {persistor ? (
+      {persistor && (
         <PersistGate loading={null} persistor={persistor}>
           {children}
         </PersistGate>
-      ) : (
-        children
       )}
     </Provider>
   );
