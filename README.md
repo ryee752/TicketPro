@@ -71,41 +71,9 @@ DB_NAME=ticket_pro<br />
         imageForEvents();
       }, []);
    ```
-## Contributions
-1. Ryan Yee
-- Implemented frontend login and sign-up features for Users and Organizations
-- Connected the frontend and backend to sign in and register Users and Organizations
-- Created a secure sign-up and login process by salting and storing hashed the password
-- Made sure that Users and Organizations can't sign up with already registered emails.
-- Setting up the project layout and environment
-- Refined Schema for Users and Organizations
-2. Nathan Duong 
-- Implemented front end for payment form.
-- Implemented connecting frontend payments to the backend.
-- Helped implement the buying tickets button compared with queried data. 
-- Auto-incrementation of seat numbers. 
-- Tested edge cases and debugged payment and ticket-related transactions.
-- Frontend components related to payment and ticket tables properly updating tables through queries.
-- Refined and edited schema for payment methods and tickets. 
-3. Keigo Tajima
-- Implemented frontend and backend for the Homepage/dashboard
-- Implemented side tab that is used for page navigation
-- Came up with the design for the Schema
-- Normalized the the database design.
-- Frontend framework design and decisions
-- Implemented popular events and registered events display homepage
-- Implemented upcoming and in-progress events display on the homepage
-4. Kisang Hwang
-- Changed Event table and type specialization
-- Front-end Event list page / read event list query
-- Implemented filters for the event list using dynamic querying
-- Front-end Create/Edit event page
-- Implemented create/edit/delete/type specialization query
-- Front-end Event detail page
-- Dealing with and setting up global variables for login sessions
-- Created seed data
-- Implemented putting image binary data to the Event table
-5. May Sabai
-- Designed the frontend for Users and Organizations profile pages
-- Connected the backend to frontend for Users and Organizations profile pages
-- Collaborated on schema
+## Key Features
+- User Management: Secure user login and sign-up process, including email validation and password hashing.
+- Event Management: Ability to create, edit, and delete events, with dynamic querying and filters for event lists.
+- Payment Integration: Frontend payment form and backend integration for ticket purchasing, including auto-incrementation of seat numbers.
+- Homepage and Dashboard: Displays popular, registered, upcoming, and in-progress events, with side navigation for seamless navigation.
+- Profile Pages: Displays user information, such as their registered events.
